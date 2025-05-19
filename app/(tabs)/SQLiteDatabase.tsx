@@ -5,16 +5,15 @@ let db: SQLiteDatabase | null = null;
 export async function initializeDatabase(): Promise<SQLiteDatabase> {
   if (!db) {
     db = await openDatabase({ name: "FaceDB.db", location: "default" });
-
-    db.transaction((tx) => {
-      tx.executeSql(
-        "CREATE TABLE IF NOT EXISTS faces (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, encoding TEXT);",
-        [],
-        () => console.log("✅ Table initialized"),
-        (error) => console.log("❌ Error initializing table:", error)
-      );
-    });
   }
+  /* db.transaction((tx) => {
+    tx.executeSql(
+      "CREATE TABLE IF NOT EXISTS faces (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, encoding TEXT);",
+      [],
+      () => console.log("✅ Table initialized"),
+      (error) => console.log("❌ Error initializing table:", error)
+    );
+  }); */
   return db;
 }
 
@@ -31,13 +30,15 @@ export async function saveFace(name: string, encoding: number[]) {
   });
 }
 
-export async function retrieveStoredEncodings(): Promise<{ name: string; encoding: number[] }[]> {
-  const database = await initializeDatabase(); 
+export async function retrieveStoredEncodings(): Promise<
+  { name: string; encoding: number[] }[]
+> {
+  const database = await initializeDatabase();
 
   return new Promise((resolve, reject) => {
     database.transaction((tx) => {
       tx.executeSql(
-        "SELECT * FROM faces;",
+        "SELECT id, name, encoding FROM faces;",
         [],
         (_, { rows }) => {
           const faces = [];

@@ -15,5 +15,5 @@
     ".expo/types/**/*.ts",
     "expo-env.d.ts",
     "types"
-  ]
+, "app/(tabs)/SQLiteDatabase.tsx", "app/(tabs)/index.jsx"  ]
 }
