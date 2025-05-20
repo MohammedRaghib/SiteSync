@@ -1,12 +1,20 @@
-import { View, Text, Button, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { useState, useEffect } from "react";
+import { useNavigation } from "@react-navigation/native";
+import { useCheckInfo } from "./AllContext";
 
 const SupervisorDashboard = () => {
+  const navigation = useNavigation();
+  const { user } = useCheckInfo();
   const [peopleData, setpeopleData] = useState([]);
+
+  if (user.role !== "Supervisor") {
+    navigation.navigate("CheckIn");
+    return;
+  }
 
   const fetchPeople = async () => {
     try {
-      // Step 1: Fetch authentication token
       const authResponse = await fetch(
         "https://django.angelightrading.com/home/angeligh/djangoapps/api/token/",
         {
