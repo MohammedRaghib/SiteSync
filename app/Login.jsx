@@ -1,19 +1,22 @@
-import React, { useState } from "react";
-import { View, Text, TextInput, Button, StyleSheet } from "react-native";
-import { useCheckInfo } from "./AllContext";
 import { useNavigation } from "@react-navigation/native";
+import { useState, useEffect } from "react";
+import { Button, StyleSheet, Text, TextInput, View } from "react-native";
+import { useCheckInfo } from "./ExtraLogic/useUserContext";
 
 const Login = () => {
   const navigation = useNavigation();
+  const { user, setUser, loggedIn, setLoggedIn } = useCheckInfo();
+
+  useEffect(() => {
+    if (loggedIn) {
+      navigation.navigate("CheckIn");
+    }
+  }, [loggedIn]);
+
+  const BACKEND_API_URL = "https://django.angelightrading.com/home/angeligh/djangoapps/";
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const { user, setUser, loggedIn, setLoggedIn } = useCheckInfo();
-
-  if(loggedIn) {
-    navigation.navigate("CheckIn");
-    return;
-  }
 
   const handleLogin = async () => {
     if (!username || !password) {
@@ -22,7 +25,7 @@ const Login = () => {
     }
 
     try {
-      const response = await fetch("https://example.com/api/login/", {
+      const response = await fetch(`${BACKEND_API_URL}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -35,9 +38,9 @@ const Login = () => {
       }
 
       const data = await response.json();
-      const { id, role } = data;
+      const { person_id, role } = data;
 
-      setUser({ id, role });
+      setUser({ id: person_id, role });
       setLoggedIn(true);
 
       if (user.role === "Supervisor") {
@@ -79,6 +82,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     padding: 20,
+    backgroundColor: "white",
+    color: "black",
   },
   input: {
     height: 40,

@@ -1,22 +1,27 @@
-import { View, Text, StyleSheet } from "react-native";
-import { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
-import { useCheckInfo } from "./AllContext";
+import { useEffect, useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
+import { useCheckInfo } from "./ExtraLogic/useUserContext";
 
 const SupervisorDashboard = () => {
   const navigation = useNavigation();
-  const { user } = useCheckInfo();
-  const [peopleData, setpeopleData] = useState([]);
+  const { user, loggedIn, hasAccess } = useCheckInfo();
 
-  if (user.role !== "Supervisor") {
-    navigation.navigate("CheckIn");
-    return;
-  }
+  useEffect(() => {
+    if (!hasAccess({ requiresLogin: true, allowedRoles: ["Supervisor"] })) {
+      navigation.navigate("CheckIn");
+    }
+  }, [user, loggedIn]);
+  
+  const BACKEND_API_URL = "https://django.angelightrading.com/home/angeligh/djangoapps/";
+  const [peopleData, setpeopleData] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const fetchPeople = async () => {
+    setLoading(true);
     try {
       const authResponse = await fetch(
-        "https://django.angelightrading.com/home/angeligh/djangoapps/api/token/",
+        `${BACKEND_API_URL}api/token/`,
         {
           method: "POST",
           headers: {
@@ -40,7 +45,7 @@ const SupervisorDashboard = () => {
       // console.log("Access Token:", access_token);
 
       const peopleResponse = await fetch(
-        "https://django.angelightrading.com/home/angeligh/djangoapps/sitesyncapplication/api/supervisordashboard/",
+        `${BACKEND_API_URL}sitesyncapplication/api/supervisordashboard/`,
         {
           method: "GET",
           headers: {
@@ -62,6 +67,8 @@ const SupervisorDashboard = () => {
       setpeopleData(jsonpeopleData || []);
     } catch (error) {
       console.error("Fetch error:", error);
+    }finally {
+      setLoading(false);
     }
   };
 
@@ -77,8 +84,7 @@ const SupervisorDashboard = () => {
         <Text style={styles.headerText}>Name</Text>
         <Text style={styles.headerText}>Status</Text>
       </View>
-
-      {peopleData.length > 0 ? (
+      {loading ? <Text>Loading...</Text> : peopleData.length > 0 ? (
         peopleData.map((person) => (
           <View key={person.id} style={styles.item}>
             <Text style={styles.name}>{person.labourer_name}</Text>

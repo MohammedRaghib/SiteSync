@@ -1,21 +1,22 @@
 import { useNavigation } from "@react-navigation/native";
 import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  Dimensions,
+    Dimensions,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from "react-native";
-import { useCheckInfo } from "./AllContext";
+import { useCheckInfo } from "./ExtraLogic/useUserContext";
 
 function SupervisorPanel() {
   const navigation = useNavigation();
-  const { user } = useCheckInfo();
+  const { user, loggedIn, hasAccess } = useCheckInfo();
 
-  if (user.role !== "Supervisor") {
-    navigation.navigate("CheckIn");
-    return;
-  }
+  useEffect(() => {
+      if (!hasAccess({ requiresLogin: true, allowedRoles: ["Supervisor"] })) {
+        navigation.navigate("CheckIn");
+      }
+    }, [user, loggedIn]);
 
   return (
     <View style={styles.container}>

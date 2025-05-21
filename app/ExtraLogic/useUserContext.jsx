@@ -10,8 +10,16 @@ export function CheckInfoProvider({ children }) {
     role: "",
   });
 
+  const hasAccess = ({ requiresLogin = true, allowedRoles = [] }) => {
+    if (requiresLogin && !loggedIn) return false;
+    if (allowedRoles.length > 0 && !allowedRoles.includes(user?.role)) return false;
+    return true;
+  };
+
   return (
-    <CheckInfo.Provider value={{ user, setUser, loggedIn, setLoggedIn }}>
+    <CheckInfo.Provider
+      value={{ user, setUser, loggedIn, setLoggedIn, hasAccess }}
+    >
       {children}
     </CheckInfo.Provider>
   );

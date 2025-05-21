@@ -1,17 +1,17 @@
-import { View, Text } from "react-native";
-import { StyleSheet } from "react-native";
-import { useCheckInfo } from "./AllContext";
 import { useNavigation } from "@react-navigation/native";
+import { StyleSheet, Text, View } from "react-native";
+import { useCheckInfo } from "./ExtraLogic/useUserContext";
 
 function SupervisorCheckout() {
   const navigation = useNavigation();
-  const { user } = useCheckInfo();
+  const { user, loggedIn, hasAccess } = useCheckInfo();
 
-  if (user.role !== "Supervisor") {
-    navigation.navigate("CheckIn");
-    return;
-  }
-  
+  useEffect(() => {
+      if (!hasAccess({ requiresLogin: true, allowedRoles: ["Supervisor"] })) {
+        navigation.navigate("CheckIn");
+      }
+    }, [user, loggedIn]);
+
   return (
     <View style={styles.container}>
       <Text>SupervisorCheckout</Text>

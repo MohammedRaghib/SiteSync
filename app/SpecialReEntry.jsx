@@ -1,16 +1,18 @@
-import { View, Text } from "react-native";
-import { StyleSheet } from "react-native";
-import { useCheckInfo } from "./AllContext";
 import { useNavigation } from "@react-navigation/native";
+import { useEffect } from "react";
+import { StyleSheet, Text, View } from "react-native";
+import { useCheckInfo } from "./ExtraLogic/useUserContext";
 
 function SpecialReEntry() {
   const navigation = useNavigation();
-  const { user } = useCheckInfo();
+  const { user, hasAccess, loggedIn } = useCheckInfo();
 
-  if (user.role !== "Supervisor") {
-    navigation.navigate("CheckIn");
-    return;
-  }
+  useEffect(() => {
+    if (!hasAccess({ requiresLogin: true, allowedRoles: ["Supervisor"] })) {
+      navigation.navigate("CheckIn");
+    }
+  }, [user, loggedIn]);
+
   return (
     <View style={styles.container}>
       <Text>SpecialReEntry</Text>

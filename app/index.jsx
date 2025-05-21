@@ -1,8 +1,12 @@
-import { Text, View } from 'react-native';
-import { StyleSheet } from 'react-native';
-import Login from './Login';
+import { Text, View, TouchableOpacity } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { StyleSheet } from "react-native";
+import Login from "./Login";
+import CheckIn from "./CheckIn";
 
 export default function Index() {
+  const navigation = useNavigation();
+  // console.log('render')
   return (
     <View style={styles.container}>
       <Login />
@@ -13,7 +17,7 @@ export default function Index() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
-    color: 'black',
-  }
+    backgroundColor: "white",
+    color: "black",
+  },
 });
