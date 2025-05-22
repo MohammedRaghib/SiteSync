@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Alert } from "react-native";
 
-const FACE_API_KEY = "YOUR_FACE_API_KEY";
-const BACKEND_API_URL = "your_backend_url";
-const FACE_API_ENDPOINT = "https://YOUR_REGION.api.cognitive.microsoft.com";
+const FACE_API_KEY = "";
+const BACKEND_API_URL = "https://django.angelightrading.com/home/angeligh/djangoapps/";
+const FACE_API_ENDPOINT = 'https://husseinlightwalla001.cognitiveservices.azure.com/';
 const PERSON_GROUP_ID = "your-workers-group-id";
 
 const useFaceRecognition = () => {
