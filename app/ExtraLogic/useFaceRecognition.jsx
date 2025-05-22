@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Alert } from "react-native";
-import useAttendanceAndChecks from "./useAttendanceAndChecks";
 
 const FACE_API_KEY = "YOUR_FACE_API_KEY";
 const BACKEND_API_URL = "your_backend_url";

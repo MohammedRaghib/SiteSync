@@ -2,7 +2,7 @@ import { useNavigation } from "@react-navigation/native";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { useFaceRecognition } from "./ExtraLogic/useFaceRecognition";
+import useFaceRecognition from "./ExtraLogic/useFaceRecognition";
 import { useCheckInfo } from "./ExtraLogic/useUserContext";
 import useAttendanceAndChecks from "./ExtraLogic/useAttendanceAndChecks";
 

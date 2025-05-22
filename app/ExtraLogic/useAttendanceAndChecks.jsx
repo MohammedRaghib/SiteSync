@@ -1,4 +1,4 @@
-import { useCheckInfo } from "./ExtraLogic/useUserContext";
+import { useCheckInfo } from "./useUserContext";
 import { Alert } from "react-native";
 
 const BACKEND_API_URL = "https://django.angelightrading.com/home/angeligh/djangoapps/";
