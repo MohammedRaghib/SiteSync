@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Button, StyleSheet, Text, TextInput, View } from "react-native";
 import { useCheckInfo } from "./ExtraLogic/useUserContext";
 
@@ -13,7 +13,8 @@ const Login = () => {
     }
   }, [loggedIn]);
 
-  const BACKEND_API_URL = "https://django.angelightrading.com/home/angeligh/djangoapps/";
+  const BACKEND_API_URL = "http://127.0.0.1:8000/api/";
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");

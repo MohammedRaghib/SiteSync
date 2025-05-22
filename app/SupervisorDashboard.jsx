@@ -13,7 +13,8 @@ const SupervisorDashboard = () => {
     }
   }, [user, loggedIn]);
   
-  const BACKEND_API_URL = "https://django.angelightrading.com/home/angeligh/djangoapps/";
+  const BACKEND_API_URL = "http://127.0.0.1:8000/api/";
+
   const [peopleData, setpeopleData] = useState([]);
   const [loading, setLoading] = useState(false);
 

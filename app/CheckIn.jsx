@@ -1,10 +1,10 @@
 import { useNavigation } from "@react-navigation/native";
 import { CameraView, useCameraPermissions } from "expo-camera";
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import useAttendanceAndChecks from "./ExtraLogic/useAttendanceAndChecks";
 import useFaceRecognition from "./ExtraLogic/useFaceRecognition";
 import { useCheckInfo } from "./ExtraLogic/useUserContext";
-import useAttendanceAndChecks from "./ExtraLogic/useAttendanceAndChecks";
 
 function CheckIn() {
   const navigation = useNavigation();
@@ -19,7 +19,8 @@ function CheckIn() {
     }
   }, [user, loggedIn]);
 
-  const BACKEND_API_URL = "https://django.angelightrading.com/home/angeligh/djangoapps/";
+  const BACKEND_API_URL = "http://127.0.0.1:8000/api/";
+
   const { recognizeFace, sendPhotoToBackend } = useFaceRecognition();
   const { Audit, CheckInAttendance } = useAttendanceAndChecks();
   const [permission, requestPermission] = useCameraPermissions();

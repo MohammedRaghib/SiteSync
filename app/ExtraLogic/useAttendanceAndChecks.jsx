@@ -1,7 +1,8 @@
-import { useCheckInfo } from "./useUserContext";
 import { Alert } from "react-native";
+import { useCheckInfo } from "./useUserContext";
 
-const BACKEND_API_URL = "https://django.angelightrading.com/home/angeligh/djangoapps/";
+const BACKEND_API_URL = "http://127.0.0.1:8000/api/";
+
 
 const useAttendanceAndChecks = () => {
     const { user } = useCheckInfo();
@@ -38,7 +39,7 @@ const useAttendanceAndChecks = () => {
                 throw new Error(`Failed to check in: ${response.statusText}`);
             }
 
-            await Audit("Check-In");
+            await Audit("Success - Check-In");
         } catch (e) {
             Alert.alert("Person not checked in");
         }
@@ -58,7 +59,7 @@ const useAttendanceAndChecks = () => {
                 throw new Error(`Failed to check out: ${response.statusText}`);
             }
 
-            await Audit("Check-Out");
+            await Audit("Success - Check-Out");
         } catch (e) {
             Alert.alert("Person not checked out");
         }
