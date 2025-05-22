@@ -52,7 +52,27 @@ const useFaceRecognition = () => {
         }
     };
 
-    return { matchedWorker, recognizeFace, loading };
+    const sendPhotoToBackend = async (imageUri, role) => {
+        try {
+            const imageBlob = await convertImageUriToBlob(imageUri);
+            const formData = new FormData();
+            formData.append("image", imageBlob);
+            formData.append("attendance_monitor", role);
+
+            const response = await fetch(`${BACKEND_API_URL}`, {
+                method: "POST",
+                body: formData,
+            });
+
+            if (!response.ok) {
+                throw new Error(`Server error: ${response.status} - ${response.statusText}`);
+            }
+        } catch (error) {
+            console.error("Error sending photo:", error.message);
+        }
+    };
+
+    return { matchedWorker, recognizeFace, loading, sendPhotoToBackend };
 };
 
 export default useFaceRecognition;
