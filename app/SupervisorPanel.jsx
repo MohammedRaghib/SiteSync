@@ -7,6 +7,7 @@ import {
     View,
 } from "react-native";
 import { useCheckInfo } from "./ExtraLogic/useUserContext";
+import { useEffect } from "react";
 
 function SupervisorPanel() {
   const navigation = useNavigation();

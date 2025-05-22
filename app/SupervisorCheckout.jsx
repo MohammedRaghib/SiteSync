@@ -1,6 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import { StyleSheet, Text, View } from "react-native";
 import { useCheckInfo } from "./ExtraLogic/useUserContext";
+import { useEffect } from "react";
 
 function SupervisorCheckout() {
   const navigation = useNavigation();
