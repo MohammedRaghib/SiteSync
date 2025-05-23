@@ -23,16 +23,21 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <CheckInfoProvider>
-          <Stack>
-            <Stack.Screen name="index" options={{ title: "Home", headerShown: false }} />
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="index" options={{ title: "Home"}} />
+            <Stack.Screen name="Language/SwitchLanguage"/>
             <Stack.Screen name="Login" options={{ title: "Login" }} />
             <Stack.Screen
               name="SupervisorDashboard"
               options={{ title: "Supervisor Dashboard" }}
             />
             <Stack.Screen
-              name="SupervisorCheckout"
+              name="Checkout"
               options={{ title: "Supervisor Checkout" }}
+            />
+            <Stack.Screen
+              name="SupervisorTaskCheck"
+              options={{ title: "Supervisor Task Check" }}
             />
             <Stack.Screen name="CheckIn" options={{ title: "Check-In" }} />
             <Stack.Screen

@@ -35,7 +35,7 @@ const useFaceRecognition = () => {
                 throw new Error(`Recognition failed: ${response.statusText}`);
             }
             
-            if (data.match_found) {
+            if (data.matchFound) {
                 setMatchedWorker(data.matched_worker);
                 await CheckInAttendance(data.matched_worker);
             } else {
@@ -59,7 +59,7 @@ const useFaceRecognition = () => {
             formData.append("image", imageBlob);
             formData.append("attendance_monitor", role);
 
-            const response = await fetch(`${BACKEND_API_URL}`, {
+            const response = await fetch(`${BACKEND_API_URL}send_photo/`, {
                 method: "POST",
                 body: formData,
             });

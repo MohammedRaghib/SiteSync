@@ -5,10 +5,13 @@ import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import useAttendanceAndChecks from "./ExtraLogic/useAttendanceAndChecks";
 import useFaceRecognition from "./ExtraLogic/useFaceRecognition";
 import { useCheckInfo } from "./ExtraLogic/useUserContext";
+import { useTranslation } from 'react-i18next';
+import './Language/i18n';
 
 function CheckIn() {
   const navigation = useNavigation();
   const { user, loggedIn, hasAccess } = useCheckInfo();
+  const { t } = useTranslation();
 
   useEffect(() => {
     // console.log('checking access');
@@ -32,10 +35,10 @@ function CheckIn() {
     return (
       <View style={styles.permissionContainer}>
         <Text style={styles.permissionText}>
-          We need permission to access the camera
+          {t("cameraPermission")}
         </Text>
         <TouchableOpacity onPress={requestPermission} style={styles.button}>
-          <Text style={styles.buttonText}>Grant Permission</Text>
+          <Text style={styles.buttonText}>{t("grantPermission")}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -49,9 +52,10 @@ function CheckIn() {
       const data = await recognizeFace(photo.uri);
       sendPhotoToBackend(photo.uri, user.role);
 
+      console.log(data);
       if (data.matchFound) {
-        setFaceData(data.matchedWorker);
-        await CheckInAttendance(faceData)
+        setFaceData(data.matched_worker);
+        Alert.alert("Person checked in");
       } else {
         Alert.alert("Unauthourised worker");
         await Audit('Failed - Check-In');
@@ -65,10 +69,10 @@ function CheckIn() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.info}>Take clear pictures for best recognition</Text>
+      <Text style={styles.info}>{t("neutralExpression")}</Text>
       <CameraView ref={cameraRef} style={styles.camera} />
       <TouchableOpacity onPress={takePicture} style={styles.captureButton}>
-        <Text style={styles.buttonText}>Capture Photo</Text>
+        <Text style={styles.buttonText}>{t("capturePhoto")}</Text>
       </TouchableOpacity>
     </View>
   );
@@ -76,6 +80,7 @@ function CheckIn() {
 
 const styles = StyleSheet.create({
   container: {
+    maxWidth: "100%",
     flex: 1,
     backgroundColor: "#000",
     alignItems: "center",
@@ -85,7 +90,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: "#fff",
     textAlign: "center",
-    marginBottom: 20,
+    paddingVertical: 20,
   },
   permissionContainer: {
     flex: 1,

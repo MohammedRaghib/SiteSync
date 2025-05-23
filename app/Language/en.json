@@ -1,0 +1,22 @@
+{
+  "neutralExpression": "Maintain a neutral facial expression",
+  "username": "Username",
+  "password": "Password",
+  "capturePhoto": "Capture Photo",
+  "login": "Login",
+  "dashboard": "Dashboard",
+  "checkOut": "Check Out",
+  "checkIn": "Check In",
+  "specialReEntry": "Special Re-Entry",
+  "status": "Status",
+  "name": "Name",
+  "grantPermission": "Grant Permission",
+  "cameraPermission": "We need permission to access the camera",
+  "selectLanguage": "Select a language",
+  "errorRequired": "Username and password are required.",
+  "errorLoginFailed": "Login failed. Please check your credentials.",
+  "loading": "Loading...",
+  "noData": "No data available",
+  "authError": "Authentication error occurred.",
+  "fetchError": "Failed to fetch data."
+}

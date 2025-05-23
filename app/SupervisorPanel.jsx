@@ -1,23 +1,25 @@
 import { useNavigation } from "@react-navigation/native";
 import {
-    Dimensions,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Dimensions,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { useCheckInfo } from "./ExtraLogic/useUserContext";
+import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
 
 function SupervisorPanel() {
   const navigation = useNavigation();
   const { user, loggedIn, hasAccess } = useCheckInfo();
+  const { t } = useTranslation();
 
   useEffect(() => {
-      if (!hasAccess({ requiresLogin: true, allowedRoles: ["Supervisor"] })) {
-        navigation.navigate("CheckIn");
-      }
-    }, [user, loggedIn]);
+    if (!hasAccess({ requiresLogin: true, allowedRoles: ["Supervisor"] })) {
+      navigation.navigate("CheckIn");
+    }
+  }, [user, loggedIn]);
 
   return (
     <View style={styles.container}>
@@ -25,57 +27,61 @@ function SupervisorPanel() {
         style={styles.link}
         onPress={() => navigation.navigate("SupervisorDashboard")}
       >
-        <Text style={styles.text}>Dashboard</Text>
+        <Text style={styles.text}>{t('dashboard')}</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
         style={styles.link}
-        onPress={() => navigation.navigate("SupervisorCheckout")}
+        onPress={() => navigation.navigate("Checkout")}
       >
-        <Text style={styles.text}>Check Out</Text>
+        <Text style={styles.text}>{t('checkOut')}</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
         style={styles.link}
-        onPress={() => navigation.navigate("SupervisorCheckIn")}
+        onPress={() => navigation.navigate("CheckIn")}
       >
-        <Text style={styles.text}>Check In</Text>
+        <Text style={styles.text}>{t('checkIn')}</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
         style={styles.link}
         onPress={() => navigation.navigate("SpecialReEntry")}
       >
-        <Text style={styles.text}>Special Re-Entry</Text>
+        <Text style={styles.text}>{t('specialReEntry')}</Text>
       </TouchableOpacity>
     </View>
   );
 }
-
-const { width, height } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    paddingHorizontal: width * 0.05,
-    overflowX: "hidden",
+    paddingHorizontal: "5%",
+    backgroundColor: "#f5f5f5",
   },
   link: {
-    paddingVertical: height * 0.02,
-    paddingHorizontal: width * 0.1,
+    paddingVertical: 15,
+    paddingHorizontal: 20,
     backgroundColor: "#007AFF",
-    width: width * 0.8,
+    width: "80%",
     alignItems: "center",
     borderRadius: 10,
-    marginVertical: height * 0.01,
+    marginVertical: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 2, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 5,
   },
   text: {
     color: "white",
-    fontSize: width * 0.05,
+    fontSize: 18,
     fontWeight: "bold",
   },
 });
+
 
 export default SupervisorPanel;

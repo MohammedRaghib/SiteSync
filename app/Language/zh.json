@@ -1,0 +1,22 @@
+{
+  "neutralExpression": "保持中立的面部表情",
+  "username": "用户名",
+  "password": "密码",
+  "capturePhoto": "拍照",
+  "login": "登录",
+  "dashboard": "仪表板",
+  "checkOut": "签出",
+  "checkIn": "签到",
+  "specialReEntry": "特别重新进入",
+  "status": "状态",
+  "name": "姓名",
+  "grantPermission": "授予权限",
+  "cameraPermission": "我们需要访问摄像头的权限",
+  "selectLanguage": "选择语言",
+  "errorRequired": "需要用户名和密码。",
+  "errorLoginFailed": "登录失败，请检查您的凭据。",
+  "loading": "加载中...",
+  "noData": "无可用数据",
+  "authError": "发生身份验证错误。",
+  "fetchError": "获取数据失败。"
+}

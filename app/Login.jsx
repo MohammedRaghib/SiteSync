@@ -1,11 +1,13 @@
+import React, { useEffect, useState } from "react";
+import { View, TextInput, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { useEffect, useState } from "react";
-import { Button, StyleSheet, Text, TextInput, View } from "react-native";
+import { useTranslation } from "react-i18next";
 import { useCheckInfo } from "./ExtraLogic/useUserContext";
 
 const Login = () => {
   const navigation = useNavigation();
   const { user, setUser, loggedIn, setLoggedIn } = useCheckInfo();
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (loggedIn) {
@@ -21,7 +23,7 @@ const Login = () => {
 
   const handleLogin = async () => {
     if (!username || !password) {
-      setErrorMessage("Username and password are required.");
+      setErrorMessage(t("errorRequired"));
       return;
     }
 
@@ -35,7 +37,7 @@ const Login = () => {
       });
 
       if (!response.ok) {
-        throw new Error(`Login failed: ${response.statusText}`);
+        throw new Error(t("errorLoginFailed") + `: ${response.statusText}`);
       }
 
       const data = await response.json();
@@ -44,12 +46,7 @@ const Login = () => {
       setUser({ id: person_id, role });
       setLoggedIn(true);
 
-      if (user.role === "Supervisor") {
-        navigation.navigate("SupervisorPanel");
-      } else {
-        navigation.navigate("CheckIn");
-      }
-      //   console.log('Login successful:', data);
+      navigation.navigate(role === "Supervisor" ? "SupervisorPanel" : "CheckIn");
     } catch (error) {
       setErrorMessage(error.message);
     }
@@ -59,20 +56,20 @@ const Login = () => {
     <View style={styles.container}>
       <TextInput
         style={styles.input}
-        placeholder="Username"
-        id="Username"
+        placeholder={t("username")}
         value={username}
         onChangeText={setUsername}
       />
       <TextInput
         style={styles.input}
-        placeholder="Password"
-        id="Password"
+        placeholder={t("password")}
         secureTextEntry
         value={password}
         onChangeText={setPassword}
       />
-      <Button title="Login" onPress={handleLogin} />
+      <TouchableOpacity style={styles.button} onPress={handleLogin}>
+        <Text style={styles.buttonText}>{t("login")}</Text>
+      </TouchableOpacity>
       {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
     </View>
   );
@@ -82,19 +79,36 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
+    alignItems: "center",
     padding: 20,
     backgroundColor: "white",
-    color: "black",
   },
   input: {
-    height: 40,
-    borderColor: "#ccc",
+    width: "80%",
+    height: 45,
     borderWidth: 1,
-    marginBottom: 10,
-    paddingHorizontal: 10,
+    borderColor: "#ccc",
+    borderRadius: 10,
+    paddingHorizontal: 15,
+    fontSize: 16,
+    marginBottom: 15,
+  },
+  button: {
+    backgroundColor: "#007AFF",
+    padding: 12,
+    borderRadius: 10,
+    width: "80%",
+    alignItems: "center",
+    marginTop: 10,
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
   },
   error: {
     color: "red",
+    fontSize: 14,
     marginTop: 10,
   },
 });

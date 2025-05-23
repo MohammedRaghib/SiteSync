@@ -3,19 +3,19 @@ import { StyleSheet, Text, View } from "react-native";
 import { useCheckInfo } from "./ExtraLogic/useUserContext";
 import { useEffect } from "react";
 
-function SupervisorCheckout() {
+function Checkout() {
   const navigation = useNavigation();
   const { user, loggedIn, hasAccess } = useCheckInfo();
 
   useEffect(() => {
-      if (!hasAccess({ requiresLogin: true, allowedRoles: ["Supervisor"] })) {
-        navigation.navigate("CheckIn");
-      }
-    }, [user, loggedIn]);
+    if (!hasAccess({ requiresLogin: true, allowedRoles: ["Guard", "Supervisor"] })) {
+      navigation.navigate("CheckIn");
+    }
+  }, [user, loggedIn]);
 
   return (
     <View style={styles.container}>
-      <Text>SupervisorCheckout</Text>
+      <Text>Checkout</Text>
     </View>
   );
 }
@@ -27,4 +27,4 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 });
-export default SupervisorCheckout;
+export default Checkout;
