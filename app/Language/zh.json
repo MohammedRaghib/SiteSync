@@ -18,5 +18,6 @@
   "loading": "加载中...",
   "noData": "无可用数据",
   "authError": "发生身份验证错误。",
-  "fetchError": "获取数据失败。"
+  "fetchError": "获取数据失败。",
+  "supervisorTaskCheck": "主管任务检查"
 }

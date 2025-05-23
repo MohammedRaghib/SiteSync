@@ -1,5 +1,4 @@
-import { Text, View, TouchableOpacity } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { View } from "react-native";
 import { StyleSheet } from "react-native";
 import Login from "./Login";
 import SwitchLanguage from "./Language/SwitchLanguage";
@@ -10,7 +9,6 @@ import SpecialReEntry from "./SpecialReEntry";
 import Checkout from "./Checkout";
 
 export default function Index() {
-  const navigation = useNavigation();
   // console.log('render')
   return (
     <View style={styles.container}>

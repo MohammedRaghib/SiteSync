@@ -28,8 +28,8 @@ function CheckIn() {
   const { Audit, CheckInAttendance } = useAttendanceAndChecks();
   const [permission, requestPermission] = useCameraPermissions();
   const cameraRef = useRef(null);
-  const [photoUri, setPhotoUri] = useState(null);
-  const [faceData, setFaceData] = useState(null);
+  // const [photoUri, setPhotoUri] = useState(null);
+  // const [faceData, setFaceData] = useState(null);
 
   if (!permission?.granted) {
     return (
@@ -46,26 +46,37 @@ function CheckIn() {
 
   const takePicture = async () => {
     if (cameraRef.current) {
-      const photo = await cameraRef.current.takePictureAsync();
-      setPhotoUri(photo.uri);
+      try {
+        const photo = await cameraRef.current.takePictureAsync();
+        // setPhotoUri(photo.uri);
 
-      const data = await recognizeFace(photo.uri);
-      sendPhotoToBackend(photo.uri, user.role);
+        const data = await recognizeFace(photo.uri);
+        sendPhotoToBackend(photo.uri, user.role);
 
-      console.log(data);
-      if (data.matchFound) {
-        setFaceData(data.matched_worker);
-        Alert.alert("Person checked in");
-      } else {
-        Alert.alert("Unauthourised worker");
-        await Audit('Failed - Check-In');
+        console.log(data);
+
+        if (data.matchFound) {
+          // setFaceData(data.matched_worker);
+          const checkIn = await CheckInAttendance(data.matched_worker);
+
+          if (!checkIn) {
+            Alert.alert("Failed to check in");
+            throw new Error("Failed to check in");
+          } else {
+            Alert.alert("Person checked in");
+          }
+        } else {
+          Alert.alert("Unauthourised worker");
+          await Audit("Failed - Check-In");
+        }
+      } catch (e) {
+        console.error("Error during check-in process:", e);
+        Alert.alert("An error occurred, please try again.");
       }
     } else {
       console.log("Camera not available");
     }
-
   };
-
 
   return (
     <View style={styles.container}>
@@ -106,7 +117,7 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: "#007AFF",
-    padding: 10,
+    padding: 20,
     borderRadius: 5,
   },
   buttonText: {

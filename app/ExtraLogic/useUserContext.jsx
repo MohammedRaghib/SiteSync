@@ -1,5 +1,4 @@
 import { createContext, useContext, useState } from "react";
-import { View, Text, Button } from "react-native";
 
 const CheckInfo = createContext(null);
 

@@ -1,6 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
 import {
-  Dimensions,
   StyleSheet,
   Text,
   TouchableOpacity,

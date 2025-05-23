@@ -1,4 +1,3 @@
-import { Alert } from "react-native";
 import { useCheckInfo } from "./useUserContext";
 
 const BACKEND_API_URL = "http://127.0.0.1:8000/api/";
@@ -40,19 +39,29 @@ const useAttendanceAndChecks = () => {
             }
 
             await Audit("Success - Check-In");
+            return true;
         } catch (e) {
-            Alert.alert("Person not checked in");
+            return false;
         }
     };
 
-    const CheckOutAttendance = async (faceData) => {
+    const CheckOutAttendance = async (faceData, workCompleted) => {
+        const ToSend = {
+            attendance_subject_id: faceData.id,
+            attendance_monitor: user.role,
+        }
+
+        if (user.role === "Supervisor") {
+            ToSend['attendance_is_work_completed'] = workCompleted;
+        }
+
         try {
             const response = await fetch(`${BACKEND_API_URL}checkout/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ attendance_subject_id: faceData.id, attendance_monitor: user.role }),
+                body: JSON.stringify(ToSend),
             });
 
             if (!response.ok) {
@@ -60,8 +69,9 @@ const useAttendanceAndChecks = () => {
             }
 
             await Audit("Success - Check-Out");
+            return true;
         } catch (e) {
-            Alert.alert("Person not checked out");
+            return false;
         }
     };
 

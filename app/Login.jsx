@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { View, TextInput, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
@@ -6,7 +6,7 @@ import { useCheckInfo } from "./ExtraLogic/useUserContext";
 
 const Login = () => {
   const navigation = useNavigation();
-  const { user, setUser, loggedIn, setLoggedIn } = useCheckInfo();
+  const { setUser, loggedIn, setLoggedIn } = useCheckInfo();
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -15,7 +15,7 @@ const Login = () => {
     }
   }, [loggedIn]);
 
-  const BACKEND_API_URL = "http://127.0.0.1:8000/api/";
+  const BACKEND_API_URL = "https://django.angelightrading.com/home/angeligh/djangoapps/api/login?username=hussein&password=somepassword";
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");

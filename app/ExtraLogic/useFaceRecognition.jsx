@@ -37,7 +37,6 @@ const useFaceRecognition = () => {
             
             if (data.matchFound) {
                 setMatchedWorker(data.matched_worker);
-                await CheckInAttendance(data.matched_worker);
             } else {
                 Alert.alert("No match found!");
                 await Audit('No match found - Check-In');
