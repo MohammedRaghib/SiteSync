@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Alert } from "react-native";
-import useAttendanceAndChecks from "./useAttendanceAndChecks";
 
 const BACKEND_API_URL = "http://127.0.0.1:8000/api/";
 
@@ -8,7 +7,6 @@ const BACKEND_API_URL = "http://127.0.0.1:8000/api/";
 const useFaceRecognition = () => {
     const [matchedWorker, setMatchedWorker] = useState(null);
     const [loading, setLoading] = useState(false);
-    const { Audit, CheckInAttendance } = useAttendanceAndChecks();
 
     const convertImageUriToBlob = async (imageUri) => {
         const response = await fetch(imageUri);
@@ -39,7 +37,6 @@ const useFaceRecognition = () => {
                 setMatchedWorker(data.matched_worker);
             } else {
                 Alert.alert("No match found!");
-                await Audit('No match found - Check-In');
             }
 
             return data;
@@ -51,27 +48,7 @@ const useFaceRecognition = () => {
         }
     };
 
-    const sendPhotoToBackend = async (imageUri, role) => {
-        try {
-            const imageBlob = await convertImageUriToBlob(imageUri);
-            const formData = new FormData();
-            formData.append("image", imageBlob);
-            formData.append("attendance_monitor", role);
-
-            const response = await fetch(`${BACKEND_API_URL}send_photo/`, {
-                method: "POST",
-                body: formData,
-            });
-
-            if (!response.ok) {
-                throw new Error(`Server error: ${response.status} - ${response.statusText}`);
-            }
-        } catch (error) {
-            console.error("Error sending photo:", error.message);
-        }
-    };
-
-    return { matchedWorker, recognizeFace, loading, sendPhotoToBackend };
+    return { matchedWorker, recognizeFace, loading, convertImageUriToBlob };
 };
 
 export default useFaceRecognition;

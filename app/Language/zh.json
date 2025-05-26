@@ -11,7 +11,7 @@
   "status": "状态",
   "name": "姓名",
   "grantPermission": "授予权限",
-  "cameraPermission": "我们需要访问摄像头的权限",
+  "AllPermissions": "需要相机和位置权限",
   "selectLanguage": "选择语言",
   "errorRequired": "需要用户名和密码。",
   "alreadyLoggedIn": "您已登录。",

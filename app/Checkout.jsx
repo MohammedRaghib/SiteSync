@@ -24,7 +24,7 @@ function Checkout() {
   const BACKEND_API_URL = "http://127.0.0.1:8000/api/";
 
   const { recognizeFace, sendPhotoToBackend } = useFaceRecognition();
-  const { Audit, CheckOutAttendance } = useAttendanceAndChecks();
+  const { CheckOutAttendance } = useAttendanceAndChecks();
   const [permission, requestPermission] = useCameraPermissions();
   const cameraRef = useRef(null);
 

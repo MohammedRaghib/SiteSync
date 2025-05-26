@@ -1,147 +1,39 @@
-import { useNavigation } from "@react-navigation/native";
-import { CameraView, useCameraPermissions } from "expo-camera";
-import { useEffect, useRef } from "react";
+import CameraLocationComponent from "./CameraLocationComponent";
 import { useTranslation } from 'react-i18next';
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import useAttendanceAndChecks from "./ExtraLogic/useAttendanceAndChecks";
+import { Alert, View, Text } from "react-native";
 import useFaceRecognition from "./ExtraLogic/useFaceRecognition";
-import useCheckInfo from "./ExtraLogic/useUserContext";
-import './Language/i18n';
+import useAttendanceAndChecks from "./ExtraLogic/useAttendanceAndChecks";
 
 function CheckIn() {
-  const navigation = useNavigation();
-  const { user, loggedIn, hasAccess } = useCheckInfo();
   const { t } = useTranslation();
+  const { recognizeFace } = useFaceRecognition();
+  const { CheckInAttendance } = useAttendanceAndChecks();
 
-  useEffect(() => {
-    // console.log('checking access');
-    if (
-      !hasAccess({ requiresLogin: true, allowedRoles: ["guard", "supervisor"] })
-    ) {
-      // console.log(loggedIn);
-      navigation.navigate("index");
-    }
-  }, [user, loggedIn]);
+  const handlePictureTaken = async (photo) => {
+    try {
+      const data = await recognizeFace(photo.uri);
 
-  const BACKEND_API_URL = "http://127.0.0.1:8000/api/";
-
-  const { recognizeFace, sendPhotoToBackend } = useFaceRecognition();
-  const { Audit, CheckInAttendance } = useAttendanceAndChecks();
-  const [permission, requestPermission] = useCameraPermissions();
-  const cameraRef = useRef(null);
-  // const [photoUri, setPhotoUri] = useState(null);
-  // const [faceData, setFaceData] = useState(null);
-
-  if (!permission?.granted) {
-    return (
-      <View style={styles.permissionContainer}>
-        <Text style={styles.permissionText}>
-          {t("cameraPermission")}
-        </Text>
-        <TouchableOpacity onPress={requestPermission} style={styles.button}>
-          <Text style={styles.buttonText}>{t("grantPermission")}</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
-
-  const takePicture = async () => {
-    if (cameraRef.current) {
-      try {
-        const photo = await cameraRef.current.takePictureAsync();
-        // setPhotoUri(photo.uri);
-
-        const data = await recognizeFace(photo.uri);
-
-        console.log(data);
-
-        if (data.matchFound) {
-          // setFaceData(data.matched_worker);
-          const checkIn = await CheckInAttendance(data.matched_worker);
-
-          if (!checkIn) {
-            Alert.alert("Failed to check in");
-            throw new Error("Failed to check in");
-          } else {
-            Alert.alert("Person checked in");
-          }
-        } else {
-          Alert.alert("Unauthourised worker");
-          await Audit("Failed - Check-In");
+      if (data.matchFound) {
+        const send = {
+          ...data.matched_worker,
+          
         }
-      } catch (e) {
-        console.error("Error during check-in process:", e);
-        Alert.alert("An error occurred, please try again.");
+        const checkIn = await CheckInAttendance(send);
+        checkIn ? Alert.alert("Person checked in") : Alert.alert("Failed to check in");
+      } else {
+        Alert.alert("Unauthorized worker");
       }
-    } else {
-      console.log("Camera not available");
+    } catch (error) {
+      console.error("Check-in process failed:", error);
     }
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.info}>{t("neutralExpression")}</Text>
-      <CameraView ref={cameraRef} style={styles.camera} />
-      <TouchableOpacity onPress={takePicture} style={styles.captureButton}>
-        <Text style={styles.buttonText}>{t("capturePhoto")}</Text>
-      </TouchableOpacity>
+    <View style={{ flex: 1 }}>
+      <Text style={{ textAlign: "center" }}>{t("neutralExpression")}</Text>
+      <CameraLocationComponent onPictureTaken={handlePictureTaken} />
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    maxWidth: "100%",
-    flex: 1,
-    backgroundColor: "#000",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  info: {
-    fontSize: 18,
-    color: "#fff",
-    textAlign: "center",
-    paddingVertical: 20,
-  },
-  permissionContainer: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 20,
-  },
-  permissionText: {
-    fontSize: 18,
-    color: "#fff",
-    textAlign: "center",
-    marginBottom: 20,
-  },
-  button: {
-    backgroundColor: "#007AFF",
-    padding: 20,
-    borderRadius: 5,
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 16,
-  },
-  camera: {
-    flex: 1,
-    width: "100%",
-  },
-  captureButton: {
-    position: "absolute",
-    bottom: 20,
-    backgroundColor: "#007AFF",
-    padding: 15,
-    borderRadius: 50,
-  },
-  previewImage: {
-    width: 100,
-    height: 100,
-    marginTop: 10,
-    borderRadius: 10,
-  },
-});
-
-// export default React.memo(CheckIn);
 export default CheckIn;
