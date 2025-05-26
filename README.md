@@ -1,50 +1,69 @@
-# Welcome to your Expo app 👋
+# SiteSync
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+SiteSync is a mobile attendance and access control solution for work sites, built using [Expo](https://expo.dev) and React Native. It leverages face recognition, camera access, and role-based permissions to streamline worker check-ins and supervisor site management.
 
-## Get started
+## Features
 
-1. Install dependencies
+- **Face Recognition Attendance:** Workers check in and out by taking a photo; the app matches faces with registered profiles.
+- **Role-Based Access:** Guards, supervisors, and other roles have tailored access to app features.
+- **Supervisor Dashboard:** Supervisors can access special panels for site management and task checks.
+- **Audit Logging:** Unsuccessful check-ins and unauthorized access attempts are logged for review.
+- **Multi-language Support:** Switch between languages using the built-in language selector.
+- **File-based Routing:** Organized, scalable navigation using Expo Router.
 
-   ```bash
-   npm install
-   ```
+## Getting Started
 
-2. Start the app
+1. **Install dependencies**
+    ```bash
+    npm install
+    ```
 
-   ```bash
-   npx expo start
-   ```
+2. **Start the app**
+    ```bash
+    npx expo start
+    ```
+    - Open in a [development build](https://docs.expo.dev/develop/development-builds/introduction/), [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/), [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/), or [Expo Go](https://expo.dev/go).
 
-In the output, you'll find options to open the app in a
+3. **Development**
+    - Edit files within the `app` directory. Each file is a screen (see [`app/`](./app/)).
+    - Uses [file-based routing](https://docs.expo.dev/router/introduction).
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+4. **Reset project**
+    ```bash
+    npm run reset-project
+    ```
+    - Moves starter code to `app-example` and creates a blank `app` directory for fresh development.
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## Project Structure
 
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+```
+app/
+  |_ index.jsx               # Entry screen (language switch, login)
+  |_ CheckIn.jsx             # Worker check-in with face recognition
+  |_ Checkout.jsx            # Worker check-out with face recognition
+  |_ SupervisorPanel.jsx     # Supervisor options & navigation
+  |_ SupervisorDashboard.jsx # Supervisor dashboard
+  |_ SpecialReEntry.jsx      # Special re-entry logic
+  |_ _layout.jsx             # App layout, navigation, theming
+  |_ Language/               # Language files and switcher
+  |_ ExtraLogic/             # Custom hooks (face recognition, attendance, user context)
+assets/
+  |_ fonts/                  # Custom fonts
+scripts/
+  |_ reset-project.js        # Utility to reset the project
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Backend Integration
 
-## Learn more
+- Expects a backend API for face recognition and attendance endpoints.
+- API endpoints are called for:
+    - Face recognition and matching
+    - Logging check-in/out events
+    - Audit trails for unauthorized and authorized attempts
 
-To learn more about developing your project with Expo, look at the following resources:
+## Learn More
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- [Expo documentation](https://docs.expo.dev/)
+- [Expo Router guide](https://docs.expo.dev/router/introduction/)
+- [React Native documentation](https://reactnative.dev/)
+- [Expo community Discord](https://chat.expo.dev)
