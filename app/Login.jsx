@@ -15,7 +15,7 @@ const Login = () => {
     }
   }, [loggedIn]);
 
-  const BACKEND_API_URL = "https://django.angelightrading.com/home/angeligh/djangoapps/api/login?username=hussein&password=somepassword";
+  const BACKEND_API_URL = "https://django.angelightrading.com/home/angeligh/djangoapps/api/";
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -28,7 +28,7 @@ const Login = () => {
     }
 
     try {
-      const response = await fetch(`${BACKEND_API_URL}`, {
+      const response = await fetch(`${BACKEND_API_URL}/login/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -42,12 +42,14 @@ const Login = () => {
 
       const data = await response.json();
       if (!data.success) {
+        console.error(data);
         throw new Error(t("errorLoginFailed"));
       }
 
       const { person_id, role } = data;
+      const lowerCaseRole = role ? role.toLowerCase() : "";
 
-      setUser({ id: person_id, role });
+      setUser({ id: person_id, role: lowerCaseRole });
       setLoggedIn(true);
 
       Alert.alert(t("successLogin"));
