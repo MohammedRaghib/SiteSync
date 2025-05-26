@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import useAttendanceAndChecks from "./ExtraLogic/useAttendanceAndChecks";
 import useFaceRecognition from "./ExtraLogic/useFaceRecognition";
-import { useCheckInfo } from "./ExtraLogic/useUserContext";
+import useCheckInfo from "./ExtraLogic/useUserContext";
 import { useTranslation } from 'react-i18next';
 import './Language/i18n';
 

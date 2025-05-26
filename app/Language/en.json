@@ -15,6 +15,7 @@
   "cameraPermission": "We need permission to access the camera",
   "selectLanguage": "Select a language",
   "errorRequired": "Username and password are required.",
+  "successLogin": "Login successful. Welcome!",
   "errorLoginFailed": "Login failed. Please check your credentials.",
   "loading": "Loading...",
   "noData": "No data available",

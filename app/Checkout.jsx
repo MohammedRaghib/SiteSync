@@ -1,12 +1,11 @@
 import { useNavigation } from "@react-navigation/native";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from 'react-i18next';
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import useAttendanceAndChecks from "./ExtraLogic/useAttendanceAndChecks";
 import useFaceRecognition from "./ExtraLogic/useFaceRecognition";
-import { useCheckInfo } from "./ExtraLogic/useUserContext";
-import i18n from "./Language/i18n";
-import { useTranslation } from 'react-i18next';
+import useCheckInfo from "./ExtraLogic/useUserContext";
 
 function Checkout() {
   const navigation = useNavigation();

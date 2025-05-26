@@ -1,8 +1,8 @@
 import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { useCheckInfo } from "./ExtraLogic/useUserContext";
 import { useTranslation } from "react-i18next";
+import { StyleSheet, Text, View } from "react-native";
+import useCheckInfo from "./ExtraLogic/useUserContext";
 
 const SupervisorDashboard = () => {
   const navigation = useNavigation();

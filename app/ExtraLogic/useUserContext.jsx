@@ -24,6 +24,6 @@ export function CheckInfoProvider({ children }) {
   );
 }
 
-export function useCheckInfo() {
+export default function useCheckInfo() {
   return useContext(CheckInfo);
 }
