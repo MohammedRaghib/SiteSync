@@ -2,10 +2,10 @@ import { useNavigation } from "@react-navigation/native";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import {
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import useCheckInfo from "./ExtraLogic/useUserContext";
 
@@ -15,10 +15,14 @@ function SupervisorPanel() {
   const { t } = useTranslation();
 
   useEffect(() => {
-    if (!hasAccess({ requiresLogin: true, allowedRoles: ["supervisor"] })) {
-      navigation.navigate("CheckIn");
+    if (loggedIn && user?.role) {
+      const hasAccessResult = hasAccess({ requiresLogin: true, allowedRoles: ["supervisor"] });
+      if (!hasAccessResult) {
+        navigation.navigate("CheckIn");
+      }
     }
-  }, [user, loggedIn]);
+  }, [loggedIn, user?.role]);
+
 
   return (
     <View style={styles.container}>

@@ -9,77 +9,107 @@ const Login = () => {
   const { setUser, loggedIn, setLoggedIn } = useCheckInfo();
   const { t } = useTranslation();
 
-  useEffect(() => {
-    if (loggedIn) {
-      navigation.navigate("CheckIn");
-    }
-  }, [loggedIn]);
-
   const BACKEND_API_URL = "https://django.angelightrading.com/home/angeligh/djangoapps/api/";
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
     if (!username || !password) {
       setErrorMessage(t("errorRequired"));
       return;
     }
-
+    // console.log(navigation.getState());
+    setErrorMessage('');
+    setLoading(true);
     try {
-      const response = await fetch(`${BACKEND_API_URL}/login/`, {
+      const tokenResponse = await fetch(`${BACKEND_API_URL}token/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          'User-Agent': 'Mozilla/5.0',
         },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ username: username, password: password }),
       });
 
-      if (!response.ok) {
-        throw new Error(t("errorLoginFailed") + `: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      if (!data.success) {
-        console.error(data);
+      if (!tokenResponse.ok) {
+        // console.log(tokenResponse);
         throw new Error(t("errorLoginFailed"));
       }
 
-      const { person_id, role } = data;
-      const lowerCaseRole = role ? role.toLowerCase() : "";
+      const tokenData = await tokenResponse.json();
+      // console.log(tokenData);
+      if (!tokenData.access || !tokenData.refresh) {
+        throw new Error(t("errorLoginFailed"));
+      }
 
-      setUser({ id: person_id, role: lowerCaseRole });
+      const userResponse = await fetch(`${BACKEND_API_URL}login?username=${username}&password=${password}`, {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${tokenData.access}`,
+          'User-Agent': 'Mozilla/5.0',
+        },
+      });
+
+      if (!userResponse.ok) {
+        throw new Error(t("errorLoginFailed"));
+      }
+      setErrorMessage("");
+      const userData = await userResponse.json();
+      const { person_id, role_name } = userData;
+      // console.log(role_name);
+      const newUser = {
+        id: person_id,
+        role: role_name,
+        access: tokenData.access,
+        refresh: tokenData.refresh
+      }
       setLoggedIn(true);
+      setUser((prevUser) => ({
+        ...prevUser,
+        ...newUser,
+      }));
 
-      Alert.alert(t("successLogin"));
-
-      navigation.navigate(role === "supervisor" ? "SupervisorPanel" : "CheckIn");
+      navigation.navigate("SupervisorPanel");
+      // Alert.alert(t("successLogin"));
     } catch (error) {
       setErrorMessage(error.message);
+    }finally {
+      setLoading(false);
     }
   };
 
+
   return (
-    <View style={styles.container}>
-      <TextInput
-        style={styles.input}
-        placeholder={t("username")}
-        value={username}
-        onChangeText={setUsername}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder={t("password")}
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
-      <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>{t("login")}</Text>
-      </TouchableOpacity>
-      {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
-    </View>
+    <>
+      {!loggedIn ? (
+        <View style={styles.container}>
+        <TextInput
+          style={styles.input}
+          placeholder={t("username")}
+          value={username}
+          onChangeText={setUsername}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder={t("password")}
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+        />
+        <TouchableOpacity style={styles.button} onPress={handleLogin}>
+          <Text style={styles.buttonText}>{loading ? t("loading") : (t("login"))}</Text>
+        </TouchableOpacity>
+        {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
+      </View>
+      ) : (
+        <View style={styles.container}>
+          <Text>{t("alreadyLoggedIn")}</Text>
+        </View>
+      )}
+    </>
   );
 };
 

@@ -39,6 +39,10 @@ export default function RootLayout() {
               name="SupervisorTaskCheck"
               options={{ title: "Supervisor Task Check" }}
             />
+            <Stack.Screen
+              name="SupervisorPanel"
+              options={{ title: "Supervisor Panel" }}
+            />
             <Stack.Screen name="CheckIn" options={{ title: "Check-In" }} />
             <Stack.Screen
               name="SpecialReEntry"

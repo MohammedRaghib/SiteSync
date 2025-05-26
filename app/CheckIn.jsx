@@ -18,6 +18,7 @@ function CheckIn() {
     if (
       !hasAccess({ requiresLogin: true, allowedRoles: ["guard", "supervisor"] })
     ) {
+      // console.log(loggedIn);
       navigation.navigate("index");
     }
   }, [user, loggedIn]);
@@ -51,7 +52,6 @@ function CheckIn() {
         // setPhotoUri(photo.uri);
 
         const data = await recognizeFace(photo.uri);
-        sendPhotoToBackend(photo.uri, user.role);
 
         console.log(data);
 

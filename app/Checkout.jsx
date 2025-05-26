@@ -27,8 +27,6 @@ function Checkout() {
   const { Audit, CheckOutAttendance } = useAttendanceAndChecks();
   const [permission, requestPermission] = useCameraPermissions();
   const cameraRef = useRef(null);
-  const [photoUri, setPhotoUri] = useState(null);
-  const [faceData, setFaceData] = useState(null);
 
   if (!permission?.granted) {
     return (
@@ -47,7 +45,6 @@ function Checkout() {
     if (cameraRef.current) {
       try {
         const photo = await cameraRef.current.takePictureAsync();
-        setPhotoUri(photo.uri);
 
         const data = await recognizeFace(photo.uri);
         sendPhotoToBackend(photo.uri, user.role);
@@ -55,7 +52,6 @@ function Checkout() {
         console.log(data);
 
         if (data.matchFound) {
-          setFaceData(data.matched_worker);
           const checkIn = await CheckOutAttendance(data.matched_worker);
 
           if (!checkIn) {
@@ -66,7 +62,6 @@ function Checkout() {
           }
         } else {
           Alert.alert("Unauthourised worker");
-          await Audit("Failed - Check-In");
         }
       } catch (e) {
         console.error("Error during check-in process:", e);

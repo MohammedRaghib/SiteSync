@@ -6,7 +6,7 @@ import useCheckInfo from "./ExtraLogic/useUserContext";
 
 const SupervisorDashboard = () => {
   const navigation = useNavigation();
-  const { user, loggedIn, hasAccess } = useCheckInfo();
+  const { user, loggedIn, hasAccess, refreshAccessToken } = useCheckInfo();
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -22,25 +22,12 @@ const SupervisorDashboard = () => {
   const [errorMessage, setErrorMessage] = useState("");
 
   const fetchPeople = async () => {
+    // console.log(user);
     setLoading(true);
     setErrorMessage("");
 
     try {
-      const authResponse = await fetch(`${BACKEND_API_URL}api/token/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "User-Agent": "Mozilla/5.0",
-        },
-        body: JSON.stringify({ username: "hussein", password: "Abdulqadir$2025" }),
-      });
-
-      if (!authResponse.ok) {
-        throw new Error(t("authError"));
-      }
-
-      const authData = await authResponse.json();
-      const access_token = authData.access;
+      const access_token = await refreshAccessToken();
 
       const peopleResponse = await fetch(
         `${BACKEND_API_URL}sitesyncapplication/api/supervisordashboard/`,
@@ -64,7 +51,7 @@ const SupervisorDashboard = () => {
       const jsonPeopleData = await peopleResponse.json();
       setPeopleData(jsonPeopleData || []);
     } catch (error) {
-      console.error("Error fetching data:", error);      
+      console.error("Error fetching data:", error);
     } finally {
       setLoading(false);
     }
