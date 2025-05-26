@@ -52,7 +52,7 @@ const Login = () => {
 
       Alert.alert(t("successLogin"));
 
-      navigation.navigate(role === "Supervisor" ? "SupervisorPanel" : "CheckIn");
+      navigation.navigate(role === "supervisor" ? "SupervisorPanel" : "CheckIn");
     } catch (error) {
       setErrorMessage(error.message);
     }

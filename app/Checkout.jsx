@@ -15,7 +15,7 @@ function Checkout() {
   useEffect(() => {
     // console.log('checking access');
     if (
-      !hasAccess({ requiresLogin: true, allowedRoles: ["Guard", "Supervisor"] })
+      !hasAccess({ requiresLogin: true, allowedRoles: ["guard", "supervisor"] })
     ) {
       navigation.navigate("index");
     }

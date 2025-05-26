@@ -51,7 +51,7 @@ const useAttendanceAndChecks = () => {
             attendance_monitor: user.role,
         }
 
-        if (user.role === "Supervisor") {
+        if (user.role === "supervisor") {
             ToSend['attendance_is_work_completed'] = workCompleted;
         }
 

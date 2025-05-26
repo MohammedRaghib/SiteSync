@@ -15,7 +15,7 @@ function SupervisorPanel() {
   const { t } = useTranslation();
 
   useEffect(() => {
-    if (!hasAccess({ requiresLogin: true, allowedRoles: ["Supervisor"] })) {
+    if (!hasAccess({ requiresLogin: true, allowedRoles: ["supervisor"] })) {
       navigation.navigate("CheckIn");
     }
   }, [user, loggedIn]);

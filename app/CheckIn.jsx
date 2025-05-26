@@ -1,11 +1,11 @@
 import { useNavigation } from "@react-navigation/native";
 import { CameraView, useCameraPermissions } from "expo-camera";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
+import { useTranslation } from 'react-i18next';
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import useAttendanceAndChecks from "./ExtraLogic/useAttendanceAndChecks";
 import useFaceRecognition from "./ExtraLogic/useFaceRecognition";
 import useCheckInfo from "./ExtraLogic/useUserContext";
-import { useTranslation } from 'react-i18next';
 import './Language/i18n';
 
 function CheckIn() {
@@ -16,7 +16,7 @@ function CheckIn() {
   useEffect(() => {
     // console.log('checking access');
     if (
-      !hasAccess({ requiresLogin: true, allowedRoles: ["Guard", "Supervisor"] })
+      !hasAccess({ requiresLogin: true, allowedRoles: ["guard", "supervisor"] })
     ) {
       navigation.navigate("index");
     }
