@@ -9,7 +9,7 @@ SiteSync is a mobile attendance and access control solution for work sites, buil
 - **Supervisor Dashboard:** Supervisors can access special panels for site management and task checks.
 - **Audit Logging:** Unsuccessful check-ins and unauthorized access attempts are logged for review.
 - **Multi-language Support:** Switch between languages using the built-in language selector.
-- **File-based Routing:** Organized, scalable navigation using Expo Router.
+- **File-based Routing:** Organized, scalable navigation using navigation feature.
 
 ## Getting Started
 
