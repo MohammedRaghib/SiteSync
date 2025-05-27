@@ -16,11 +16,17 @@ function CheckIn() {
       if (data.matchFound) {
         const send = {
           ...data.matched_worker,
-          
+          image: photo.uri,
+          is_unauthorized: false
         }
         const checkIn = await CheckInAttendance(send);
         checkIn ? Alert.alert("Person checked in") : Alert.alert("Failed to check in");
       } else {
+        const send = {
+          image: photo.uri,
+          is_unauthorized: true
+        }
+        const checkIn = await CheckInAttendance(send);
         Alert.alert("Unauthorized worker");
       }
     } catch (error) {

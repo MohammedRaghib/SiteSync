@@ -10,86 +10,57 @@ const useAttendanceAndChecks = () => {
         try {
             const timestamp = new Date().toISOString();
 
-            let { status } = await Location.requestForegroundPermissionsAsync();
-            if (status !== "granted") {
-                throw new Error("Location permission denied");
-            }
+            const { status } = await Location.requestForegroundPermissionsAsync();
+            if (status !== "granted") throw new Error("Location permission denied");
 
-            const location = await Location.getCurrentPositionAsync({});
-            const locationData = {
-                latitude: location.coords.latitude,
-                longitude: location.coords.longitude,
-            };
-
-            return { timestamp, location: locationData };
+            const { coords } = await Location.getCurrentPositionAsync({});
+            return { timestamp, location: { latitude: coords.latitude, longitude: coords.longitude } };
         } catch (error) {
             console.error("Error fetching attendance info:", error);
             return null;
         }
     };
 
-    const CheckInAttendance = async (faceData) => {
+    const sendAttendanceRequest = async (endpoint, faceData, isCheckIn, additionalFields = {}) => {
         try {
             const attendanceInfo = await getAttendanceInfo();
-            const ToSend = new FormData();
-            const photoBlob = await fetch(faceData.image).then((res) => res.blob());
-            ToSend.append("attendance_subject_id", faceData.id);
-            ToSend.append("attendance_monitor", user.id);
-            ToSend.append("attendance_timestamp", attendanceInfo?.timestamp);
-            ToSend.append("attendance_location", JSON.stringify(attendanceInfo?.location));
-            ToSend.append("attendance_is_check_in", true);
-            ToSend.append("attendance_is_supervisor_check_in", user.role === "supervisor" ? true : false);
-            ToSend.append("attendance_photo", photoBlob);
+            if (!attendanceInfo) throw new Error("Failed to retrieve attendance info");
 
-            const response = await fetch(`${BACKEND_API_URL}checkin/`, {
-                method: "POST",
-                body: ToSend,
-            });
+            const photoBlob = await fetch(faceData.image).then(res => res.blob());
 
-            if (!response.ok) {
-                throw new Error(`Failed to check in: ${response.statusText}`);
-            }
+            const formData = new FormData();
+            formData.append("attendance_is_unauthorized", faceData?.is_unauthorized);
+            formData.append("attendance_subject_id", faceData?.is_unauthorized ? null : faceData.id);
+            formData.append("attendance_monitor_id", user.id);
+            formData.append("attendance_timestamp", attendanceInfo.timestamp);
+            formData.append("attendance_location", JSON.stringify(attendanceInfo.location));
+            formData.append("attendance_is_check_in", isCheckIn);
+            formData.append("attendance_is_supervisor_check_" + (isCheckIn ? "in" : "out"), user.role === "supervisor");
+            formData.append("attendance_photo", photoBlob);
+
+            Object.entries(additionalFields).forEach(([key, value]) => formData.append(key, value));
+
+            const response = await fetch(`${BACKEND_API_URL}${endpoint}/`, { method: "POST", body: formData });
+            if (!response.ok) throw new Error(`Failed to check ${isCheckIn ? "in" : "out"}: ${response.statusText}`);
 
             return true;
-        } catch (e) {
+        } catch (error) {
+            console.error("Attendance request error:", error);
             return false;
         }
     };
 
-    const CheckOutAttendance = async (faceData, workCompleted) => {
-        try {
-            const attendanceInfo = await getAttendanceInfo();
+    const CheckInAttendance = (faceData) => sendAttendanceRequest("checkin", faceData, true);
+    const CheckOutAttendance = (faceData) => sendAttendanceRequest("checkout", faceData, false, {
+        attendance_is_work_completed: faceData?.is_work_completed,
+        attendance_is_incomplete_checkout: !faceData?.is_work_completed,
+        attendance_equipment_returned: faceData?.is_equipment_returned,
+    });
+    const SpecialReEntry = (faceData) => sendAttendanceRequest("checkout", faceData, true, {
+        attendance_is_entry_permitted: faceData?.is_entry_permitted,
+    });
 
-            const ToSend = {
-                attendance_subject_id: faceData.id,
-                attendance_monitor: user.role,
-                timestamp: attendanceInfo?.timestamp,
-                location: attendanceInfo?.location,
-            };
-
-            if (user.role === "supervisor") {
-                ToSend["attendance_is_work_completed"] = workCompleted;
-            }
-
-            const response = await fetch(`${BACKEND_API_URL}checkout/`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(ToSend),
-            });
-
-            if (!response.ok) {
-                throw new Error(`Failed to check out: ${response.statusText}`);
-            }
-
-            return true;
-        } catch (e) {
-            return false;
-        }
-    };
-
-    return { getAttendanceInfo, CheckInAttendance, CheckOutAttendance };
+    return { getAttendanceInfo, CheckInAttendance, CheckOutAttendance, SpecialReEntry };
 };
 
 export default useAttendanceAndChecks;

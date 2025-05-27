@@ -21,5 +21,8 @@
   "loading": "Loading...",
   "noData": "No data available",
   "authError": "Authentication error occurred.",
-  "fetchError": "Failed to fetch data."
+  "fetchError": "Failed to fetch data.",
+  "checkoutSuccess": "Person checked out",
+  "checkoutFailure": "Failed to check out",
+  "unauthorizedWorker": "Unauthorized worker"
 }

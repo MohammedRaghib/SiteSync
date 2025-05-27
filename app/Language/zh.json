@@ -21,5 +21,8 @@
   "noData": "无可用数据",
   "authError": "发生身份验证错误。",
   "fetchError": "获取数据失败。",
-  "supervisorTaskCheck": "主管任务检查"
+  "supervisorTaskCheck": "主管任务检查",
+  "checkoutSuccess": "人员已签出",
+  "checkoutFailure": "签出失败",
+  "unauthorizedWorker": "未经授权的工人"
 }
