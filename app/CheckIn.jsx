@@ -23,6 +23,10 @@ function CheckIn() {
     try {
       const data = await recognizeFace(photo.uri);
 
+      if (!data.ok) {
+        throw new Error(t("recognitionFailed"));
+      }
+
       if (data.matchFound) {
         const send = {
           ...data.matched_worker,
@@ -40,6 +44,7 @@ function CheckIn() {
         Alert.alert("Unauthorized worker");
       }
     } catch (error) {
+      Alert.alert(error.message);
       console.error("Check-in process failed:", error);
     }
   };
