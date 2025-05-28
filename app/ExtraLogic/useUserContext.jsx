@@ -11,6 +11,7 @@ export function CheckInfoProvider({ children }) {
     refresh: "",
   });
   const BACKEND_API_URL = "https://django.angelightrading.com/home/angeligh/djangoapps/api/";
+  
   const hasAccess = ({ requiresLogin = true, allowedRoles = [] }) => {
     if (requiresLogin && !loggedIn) return false;
     if (allowedRoles.length > 0 && !allowedRoles.includes(user?.role)) return false;

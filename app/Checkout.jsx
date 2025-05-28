@@ -5,7 +5,7 @@ import useFaceRecognition from "./ExtraLogic/useFaceRecognition";
 import useAttendanceAndChecks from "./ExtraLogic/useAttendanceAndChecks";
 import { useNavigation } from "@react-navigation/native";
 import useCheckInfo from "./ExtraLogic/useUserContext";
-import { useEffect } from "react"; 
+import { useEffect } from "react";
 
 function CheckOut() {
   const { t } = useTranslation();
@@ -24,8 +24,11 @@ function CheckOut() {
     try {
       const data = await recognizeFace(photo.uri);
 
+      if (!data.ok) {
+        throw new Error(t("recognitionFailed"));
+      }
       if (data.matchFound) {
-        if (user.role === "supervisor") navigation.navigate("SupervisorTaskCheck", { faceData: data.matched_worker });
+        if (user.role === "supervisor") navigation.navigate("SupervisorTaskCheck", { faceData: { ...data.matched_worker, image: photo.uri } });
 
         const send = {
           ...data.matched_worker,
@@ -47,6 +50,7 @@ function CheckOut() {
         Alert.alert(t("unauthorizedWorker"));
       }
     } catch (error) {
+      Alert.alert(error.message);
       console.error("Check-out process failed:", error);
     }
   };

@@ -24,5 +24,10 @@
   "fetchError": "Failed to fetch data.",
   "checkoutSuccess": "Person checked out",
   "checkoutFailure": "Failed to check out",
-  "unauthorizedWorker": "Unauthorized worker"
+  "recognitionFailed": "Face recognition failed",
+  "unauthorizedWorker": "Unauthorized worker",
+  "serverError": "Server error occurred.",
+  "noEquipment": "No equipment assigned",
+  "noName": "Unknown Person",
+  "selectAll": "Select All"
 }

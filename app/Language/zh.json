@@ -24,5 +24,10 @@
   "supervisorTaskCheck": "主管任务检查",
   "checkoutSuccess": "人员已签出",
   "checkoutFailure": "签出失败",
-  "unauthorizedWorker": "未经授权的工人"
+  "recognitionFailed": "人脸识别失败",
+  "unauthorizedWorker": "未经授权的工人",
+  "serverError": "服务器错误发生。",
+  "noEquipment": "未分配设备",
+  "noName": "身份不明的人",
+  "selectAll": "全选"
 }
