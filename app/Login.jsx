@@ -6,7 +6,7 @@ import useCheckInfo from "./ExtraLogic/useUserContext";
 
 const Login = () => {
   const navigation = useNavigation();
-  const { setUser, loggedIn, setLoggedIn } = useCheckInfo();
+  const { setUser, loggedIn, setLoggedIn, user } = useCheckInfo();
   const { t } = useTranslation();
 
   const BACKEND_API_URL = "https://django.angelightrading.com/home/angeligh/djangoapps/api/";
@@ -107,6 +107,9 @@ const Login = () => {
       ) : (
         <View style={styles.container}>
           <Text>{t("alreadyLoggedIn")}</Text>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate(user.role === "supervisor" ? "SupervisorPanel" : "CheckIn")}>
+            <Text style={styles.buttonText}>{t("dashboard")}</Text>
+          </TouchableOpacity>
         </View>
       )}
     </>

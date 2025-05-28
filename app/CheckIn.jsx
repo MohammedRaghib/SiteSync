@@ -3,12 +3,22 @@ import { useTranslation } from 'react-i18next';
 import { Alert, View, Text } from "react-native";
 import useFaceRecognition from "./ExtraLogic/useFaceRecognition";
 import useAttendanceAndChecks from "./ExtraLogic/useAttendanceAndChecks";
+import { useNavigation } from "@react-navigation/native";
+import useCheckInfo from "./ExtraLogic/useUserContext";
+import { useEffect } from "react";
 
 function CheckIn() {
   const { t } = useTranslation();
   const { recognizeFace } = useFaceRecognition();
   const { CheckInAttendance } = useAttendanceAndChecks();
+  const navigation = useNavigation();
+  const { user, hasAccess, loggedIn } = useCheckInfo();
 
+  useEffect(() => {
+    if (!hasAccess({ requiresLogin: true, allowedRoles: ["guard", "supervisor"] })) {
+      navigation.navigate("CheckIn");
+    }
+  }, [user, loggedIn]);
   const handlePictureTaken = async (photo) => {
     try {
       const data = await recognizeFace(photo.uri);
