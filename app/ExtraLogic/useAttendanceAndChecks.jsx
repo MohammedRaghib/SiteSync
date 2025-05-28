@@ -50,13 +50,13 @@ const useAttendanceAndChecks = () => {
         }
     };
 
-    const CheckInAttendance = (faceData) => sendAttendanceRequest("checkin", faceData, true);
-    const CheckOutAttendance = (faceData) => sendAttendanceRequest("checkout", faceData, false, {
+    const CheckInAttendance = (faceData) => sendAttendanceRequest("attendance", faceData, true);
+    const CheckOutAttendance = (faceData) => sendAttendanceRequest("attendance", faceData, false, {
         attendance_is_work_completed: faceData?.is_work_completed,
         attendance_is_incomplete_checkout: !faceData?.is_work_completed,
         attendance_equipment_returned: faceData?.is_equipment_returned,
     });
-    const SpecialReEntry = (faceData) => sendAttendanceRequest("checkout", faceData, true, {
+    const SpecialReEntry = (faceData) => sendAttendanceRequest("attendance", faceData, true, {
         attendance_is_entry_permitted: faceData?.is_entry_permitted,
     });
 

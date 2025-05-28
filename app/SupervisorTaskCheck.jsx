@@ -33,10 +33,17 @@ function SupervisorTaskCheck() {
     try {
       const response = await fetch(`${BACKEND_API_URL}tasks/${faceData.id}/`);
       const data = await response.json();
-      setState(prev => ({ ...prev, tasks: data || [] }));
-    } catch (error) {
-      setState(prev => ({ ...prev, error: t('fetchError') }));
-      console.error('Fetch error:', error);
+
+      if (!response.ok) {
+        throw new Error(t('fetchError'));
+      }
+
+      setState(prev => ({ ...prev, tasks: data.tasks || [] }));
+
+    } catch (e) {
+      setState(prev => ({ ...prev, error: e.message }));
+      console.error('Fetch error:', e);
+      
     } finally {
       setState(prev => ({ ...prev, loading: false }));
     }
@@ -98,7 +105,7 @@ function SupervisorTaskCheck() {
         navigation.goBack();
       }
     } catch (error) {
-      Alert.alert(t("error"), error.message);
+      Alert.alert(t("checkoutFailure"));
     } finally {
       setState(prev => ({ ...prev, submitting: false }));
     }
@@ -123,10 +130,10 @@ function SupervisorTaskCheck() {
 
     return task.equipment.map(equipment => (
       <View key={equipment.id} style={styles.item}>
-        <CheckBox
+        {/* <CheckBox
           value={state.returnedEquipment.includes(equipment.id)}
           onValueChange={() => toggleSelection('equipment', equipment.id)}
-        />
+        /> */}
         <Text style={styles.equipment_name}>{equipment.name}</Text>
       </View>
     ));
@@ -151,10 +158,10 @@ function SupervisorTaskCheck() {
           {state.tasks.map(task => (
             <View key={task.id} style={styles.taskContainer}>
               <View style={styles.item}>
-                <CheckBox
+                {/* <CheckBox
                   value={state.selectedTasks.includes(task.id)}
                   onValueChange={() => toggleSelection('task', task.id)}
-                />
+                /> */}
                 <Text style={styles.task_name}>{task.name}</Text>
               </View>
               {renderEquipment(task)}
