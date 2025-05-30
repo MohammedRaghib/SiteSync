@@ -41,7 +41,6 @@ const useFaceRecognition = () => {
 
             return data;
         } catch (error) {
-            console.error("Recognition error:", error);
             return { matchFound: false, error: error.message };
         } finally {
             setLoading(false);
