@@ -24,9 +24,6 @@ function CheckOut() {
     try {
       const data = await recognizeFace(photo.uri);
 
-      if (!data.ok) {
-        throw new Error(t("recognitionFailed"));
-      }
       if (data.matchFound) {
         if (user.role === "supervisor") navigation.navigate("SupervisorTaskCheck", { faceData: { ...data.matched_worker, image: photo.uri } });
 
