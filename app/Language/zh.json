@@ -29,5 +29,7 @@
   "serverError": "服务器错误发生。",
   "noEquipment": "未分配设备",
   "noName": "身份不明的人",
-  "selectAll": "全选"
+  "selectAll": "全选",
+  "checkinSuccess": "签到人员",
+  "checkinFailure": "签到失败"
 }

@@ -15,7 +15,7 @@ const SupervisorDashboard = () => {
     }
   }, [user, loggedIn]);
 
-  const BACKEND_API_URL = "https://django.angelightrading.com/home/angeligh/djangoapps/";
+  const BACKEND_API_URL = "http://127.0.0.1:8000/api/";
 
   const [peopleData, setPeopleData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -27,20 +27,10 @@ const SupervisorDashboard = () => {
     setErrorMessage("");
 
     try {
-      const access_token = await refreshAccessToken();
-
       const peopleResponse = await fetch(
-        `${BACKEND_API_URL}sitesyncapplication/api/supervisordashboard/`,
-        {
-          method: "GET",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "User-Agent": "Mozilla/5.0",
-            Authorization: `Bearer ${access_token}`,
-            supervisorid: user.id,
-          },
-        }
+        `${BACKEND_API_URL}supervisor_dashboard/`, {
+        method: "GET",
+      }
       );
 
       if (!peopleResponse.ok) {
@@ -49,7 +39,7 @@ const SupervisorDashboard = () => {
       }
 
       const jsonPeopleData = await peopleResponse.json();
-      setPeopleData(jsonPeopleData || []);
+      setPeopleData(jsonPeopleData.data || []);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {

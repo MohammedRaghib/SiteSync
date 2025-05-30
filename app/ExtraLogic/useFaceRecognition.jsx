@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Alert } from "react-native";
 
-const BACKEND_API_URL = "http://127.0.0.1:8000/api/";
+const BACKEND_API_URL = "http://127.0.0.1:9000/api/";
 
 
 const useFaceRecognition = () => {

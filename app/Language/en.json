@@ -29,5 +29,7 @@
   "serverError": "Server error occurred.",
   "noEquipment": "No equipment assigned",
   "noName": "Unknown Person",
-  "selectAll": "Select All"
+  "selectAll": "Select All",
+  "checkinSuccess": "Person checked in",
+  "checkinFailure": "Failed to check in"
 }
