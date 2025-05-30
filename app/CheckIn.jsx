@@ -23,18 +23,17 @@ function CheckIn() {
     try {
       const data = await recognizeFace(photo.uri);
 
-      if (!data.ok) {
-        throw new Error(t("recognitionFailed"));
-      }
-
-      if (data.matchFound) {
+      if (data.success) {
         const send = {
           ...data.matched_worker,
           image: photo.uri,
           is_unauthorized: false
         }
         const checkIn = await CheckInAttendance(send);
-        checkIn ? Alert.alert("Person checked in") : Alert.alert("Failed to check in");
+        // console.log(checkIn);
+        checkIn
+          ? Alert.alert(t("checkinSuccess"))
+          : console.log(t("checkinFailure"));
       } else {
         const send = {
           image: photo.uri,

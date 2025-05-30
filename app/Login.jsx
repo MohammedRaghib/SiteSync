@@ -9,7 +9,7 @@ const Login = () => {
   const { setUser, loggedIn, setLoggedIn, user } = useCheckInfo();
   const { t } = useTranslation();
 
-  const BACKEND_API_URL = "https://django.angelightrading.com/home/angeligh/djangoapps/api/";
+  const BACKEND_API_URL = "http://127.0.0.1:8000/api/";
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -21,62 +21,43 @@ const Login = () => {
       setErrorMessage(t("errorRequired"));
       return;
     }
-    // console.log(navigation.getState());
     setErrorMessage('');
     setLoading(true);
     try {
-      const tokenResponse = await fetch(`${BACKEND_API_URL}token/`, {
+      const formData = new FormData();
+      formData.append('username', username)
+      formData.append('password', password)
+
+      const userResponse = await fetch(`${BACKEND_API_URL}login/`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          'User-Agent': 'Mozilla/5.0',
-        },
-        body: JSON.stringify({ username: username, password: password }),
-      });
-
-      if (!tokenResponse.ok) {
-        // console.log(tokenResponse);
-        throw new Error(t("errorLoginFailed"));
-      }
-
-      const tokenData = await tokenResponse.json();
-      // console.log(tokenData);
-      if (!tokenData.access || !tokenData.refresh) {
-        throw new Error(t("errorLoginFailed"));
-      }
-
-      const userResponse = await fetch(`${BACKEND_API_URL}login?username=${username}&password=${password}`, {
-        method: "GET",
-        headers: {
-          "Authorization": `Bearer ${tokenData.access}`,
-          'User-Agent': 'Mozilla/5.0',
-        },
+        body: formData
       });
 
       if (!userResponse.ok) {
         throw new Error(t("errorLoginFailed"));
       }
+
       setErrorMessage("");
       const userData = await userResponse.json();
       const { person_id, role_name } = userData;
-      // console.log(role_name);
+
       const newUser = {
         id: person_id,
         role: role_name,
-        access: tokenData.access,
-        refresh: tokenData.refresh
       }
       setLoggedIn(true);
       setUser((prevUser) => ({
         ...prevUser,
         ...newUser,
+        // refresh: tokenData.refresh,
+        // access: tokenData.access,
       }));
 
       navigation.navigate("SupervisorPanel");
       // Alert.alert(t("successLogin"));
     } catch (error) {
       setErrorMessage(error.message);
-    }finally {
+    } finally {
       setLoading(false);
     }
   };
@@ -86,24 +67,24 @@ const Login = () => {
     <>
       {!loggedIn ? (
         <View style={styles.container}>
-        <TextInput
-          style={styles.input}
-          placeholder={t("username")}
-          value={username}
-          onChangeText={setUsername}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder={t("password")}
-          secureTextEntry
-          value={password}
-          onChangeText={setPassword}
-        />
-        <TouchableOpacity style={styles.button} onPress={handleLogin}>
-          <Text style={styles.buttonText}>{loading ? t("loading") : (t("login"))}</Text>
-        </TouchableOpacity>
-        {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
-      </View>
+          <TextInput
+            style={styles.input}
+            placeholder={t("username")}
+            value={username}
+            onChangeText={setUsername}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder={t("password")}
+            secureTextEntry
+            value={password}
+            onChangeText={setPassword}
+          />
+          <TouchableOpacity style={styles.button} onPress={handleLogin}>
+            <Text style={styles.buttonText}>{loading ? t("loading") : (t("login"))}</Text>
+          </TouchableOpacity>
+          {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
+        </View>
       ) : (
         <View style={styles.container}>
           <Text>{t("alreadyLoggedIn")}</Text>
