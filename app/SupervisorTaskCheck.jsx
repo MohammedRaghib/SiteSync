@@ -25,7 +25,7 @@ function SupervisorTaskCheck() {
     selectAll: false
   });
 
-  const BACKEND_API_URL = "https://django.angelightrading.com/home/angeligh/djangoapps/api/";
+  const BACKEND_API_URL = "https://sitesync.angelightrading.com/api/get_worker_tasks/";
 
   // Fetch tasks
   const fetchTasks = async () => {

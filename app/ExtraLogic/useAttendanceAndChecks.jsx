@@ -1,7 +1,7 @@
 import useCheckInfo from "./useUserContext";
 import * as Location from "expo-location";
 
-const BACKEND_API_URL = "http://127.0.0.1:9000/api/";
+const BACKEND_API_URL = "http://127.0.0.1:8000/api/";
 
 const useAttendanceAndChecks = () => {
     const { user } = useCheckInfo();

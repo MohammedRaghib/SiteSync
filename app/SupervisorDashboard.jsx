@@ -15,7 +15,7 @@ const SupervisorDashboard = () => {
     }
   }, [user, loggedIn]);
 
-  const BACKEND_API_URL = "http://127.0.0.1:8000/api/";
+  const BACKEND_API_URL = "https://sitesync.angelightrading.com/api/";
 
   const [peopleData, setPeopleData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -67,8 +67,8 @@ const SupervisorDashboard = () => {
       ) : peopleData.length > 0 ? (
         peopleData.map((person) => (
           <View key={person.id} style={styles.item}>
-            <Text style={styles.name}>{person.labourer_name}</Text>
-            <Text style={styles.status}>{person.labourer_status}</Text>
+            <Text style={styles.name}>{person.attendance_subject?.person_name}</Text>
+            <Text style={styles.status}>{person.attendance_is_check_in ? t("checkIn") : t("checkOut")}</Text>
           </View>
         ))
       ) : (
