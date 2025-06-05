@@ -47,7 +47,7 @@ const useAttendanceAndChecks = () => {
 
             const payload = {
                 attendance_is_unauthorized: Boolean(faceData?.is_unauthorized),
-                attendance_subject_id: faceData?.is_unauthorized ? null : faceData.id,
+                attendance_subject_id: faceData?.is_unauthorized ? null : faceData.person_id,
                 attendance_monitor_id: user.id,
                 attendance_timestamp: attendanceInfo.timestamp,
                 attendance_location: attendanceInfo.location,

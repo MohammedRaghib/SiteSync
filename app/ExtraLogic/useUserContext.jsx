@@ -5,7 +5,7 @@ const CheckInfo = createContext(null);
 export function CheckInfoProvider({ children }) {
   const [loggedIn, setLoggedIn] = useState(false);
   const [user, setUser] = useState({
-    id: 0,
+    id: "",
     role: "",
     access: "",
     refresh: "",
