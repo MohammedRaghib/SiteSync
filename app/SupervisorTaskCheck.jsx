@@ -1,10 +1,9 @@
-import { Alert, View, Text, CheckBox, TouchableOpacity, ActivityIndicator } from "react-native";
-import { useTranslation } from 'react-i18next';
-import { useRoute, useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { useEffect, useState } from "react";
-import useCheckInfo from "./ExtraLogic/useUserContext";
-import { StyleSheet } from "react-native";
+import { useTranslation } from 'react-i18next';
+import { ActivityIndicator, Alert, CheckBox, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import useAttendanceAndChecks from "./ExtraLogic/useAttendanceAndChecks";
+import useCheckInfo from "./ExtraLogic/useUserContext";
 
 function SupervisorTaskCheck() {
   // Hooks and state
@@ -25,13 +24,13 @@ function SupervisorTaskCheck() {
     selectAll: false
   });
 
-  const BACKEND_API_URL = "https://sitesync.angelightrading.com/api/get_worker_tasks/";
+  const BACKEND_API_URL = "http://127.0.0.1:8000/api/";
 
   // Fetch tasks
   const fetchTasks = async () => {
     setState(prev => ({ ...prev, loading: true, error: null }));
     try {
-      const response = await fetch(`${BACKEND_API_URL}tasks/${faceData.id}/`);
+      const response = await fetch(`${BACKEND_API_URL}get_worker_tasks/${faceData.person_id}/`);
       const data = await response.json();
 
       if (!response.ok) {

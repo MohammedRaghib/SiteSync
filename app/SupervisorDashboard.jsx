@@ -15,7 +15,7 @@ const SupervisorDashboard = () => {
     }
   }, [user, loggedIn]);
 
-  const BACKEND_API_URL = "https://sitesync.angelightrading.com/api/";
+  const BACKEND_API_URL = "http://127.0.0.1:8000/api/";
 
   const [peopleData, setPeopleData] = useState([]);
   const [loading, setLoading] = useState(false);
