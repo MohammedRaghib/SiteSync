@@ -33,9 +33,9 @@ const CameraLocationComponent = ({ onPictureTaken }) => {
   if (!cameraPermission?.granted || !locationPermissionGranted) {
     return (
       <View style={styles.permissionContainer}>
-        <Text style={styles.permissionText}>{t("AllPermissions")}</Text>
+        <Text style={styles.permissionText}>{t("ui.AllPermissions")}</Text>
         <TouchableOpacity onPress={requestBothPermissions} style={styles.button}>
-          <Text style={styles.buttonText}>{t("grantPermission")}</Text>
+          <Text style={styles.buttonText}>{t("ui.grantPermission")}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -57,10 +57,10 @@ const CameraLocationComponent = ({ onPictureTaken }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.info}>{t("neutralExpression")}</Text>
+      <Text style={styles.info}>{t("ui.neutralExpression")}</Text>
       <CameraView ref={cameraRef} style={styles.camera} />
       <TouchableOpacity onPress={takePicture} style={styles.captureButton}>
-        <Text style={styles.buttonText}>{t("capturePhoto")}</Text>
+        <Text style={styles.buttonText}>{t("ui.capturePhoto")}</Text>
       </TouchableOpacity>
     </View>
   );

@@ -36,15 +36,15 @@ function CheckOut() {
         };
         const checkOut = await CheckOutAttendance(send);
         checkOut
-          ? Alert.alert(t("checkoutSuccess"))
-          : Alert.alert(t("checkoutFailure"));
+          ? Alert.alert(t("attendance.checkoutSuccess"))
+          : Alert.alert(t("attendance.checkoutFailure"));
       } else {
         const send = {
           image: photo.uri,
           is_unauthorized: true
         };
         const checkOut = await CheckOutAttendance(send);
-        Alert.alert(t("unauthorizedWorker"));
+        Alert.alert(t("attendance.unauthorizedWorker"));
       }
     } catch (error) {
       Alert.alert(error.message);

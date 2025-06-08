@@ -42,7 +42,7 @@ function SupervisorTaskCheck() {
     } catch (e) {
       setState(prev => ({ ...prev, error: e.message }));
       console.error('Fetch error:', e);
-      
+
     } finally {
       setState(prev => ({ ...prev, loading: false }));
     }
@@ -96,7 +96,7 @@ function SupervisorTaskCheck() {
       });
 
       Alert.alert(
-        success ? t("checkoutSuccess") : t("checkoutFailure"),
+        success ? t("attendance.checkoutSuccess") : t("attendance.checkoutFailure"),
         `Tasks: ${allTasksCompleted ? 'Completed' : 'Incomplete'}\nEquipment: ${allEquipmentReturned ? 'Returned' : 'Missing'}`
       );
 
@@ -104,7 +104,7 @@ function SupervisorTaskCheck() {
         navigation.goBack();
       }
     } catch (error) {
-      Alert.alert(t("checkoutFailure"));
+      Alert.alert(t("attendance.checkoutFailure"));
     } finally {
       setState(prev => ({ ...prev, submitting: false }));
     }
@@ -124,7 +124,7 @@ function SupervisorTaskCheck() {
   // Render helpers
   const renderEquipment = (task) => {
     if (!task.equipment || task.equipment.length === 0) {
-      return <Text style={styles.noData}>{t("noEquipment")}</Text>;
+      return <Text style={styles.noData}>{t("ui.noEquipment")}</Text>;
     }
 
     return task.equipment.map(equipment => (
@@ -140,12 +140,12 @@ function SupervisorTaskCheck() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{t("dashboard")}</Text>
-      <Text style={styles.name}>{faceData?.name || t("noName")}</Text>
+      <Text style={styles.title}>{t("ui.dashboard")}</Text>
+      <Text style={styles.name}>{faceData?.name || t("errors.noName")}</Text>
 
       <TouchableOpacity onPress={toggleSelectAll} style={styles.selectAllContainer}>
         <CheckBox value={state.selectAll} onValueChange={toggleSelectAll} />
-        <Text style={styles.selectAllText}>{t("selectAll")}</Text>
+        <Text style={styles.selectAllText}>{t("ui.selectAll")}</Text>
       </TouchableOpacity>
 
       {state.loading ? (
@@ -175,12 +175,12 @@ function SupervisorTaskCheck() {
             {state.submitting ? (
               <ActivityIndicator color="white" />
             ) : (
-              <Text style={styles.submitButtonText}>{t("submit")}</Text>
+              <Text style={styles.submitButtonText}>{t("ui.submit")}</Text>
             )}
           </TouchableOpacity>
         </>
       ) : (
-        <Text style={styles.noData}>{t("noData")}</Text>
+        <Text style={styles.noData}>{t("errors.noData")}</Text>
       )}
     </View>
   );

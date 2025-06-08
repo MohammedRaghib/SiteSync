@@ -30,28 +30,28 @@ function SupervisorPanel() {
         style={styles.link}
         onPress={() => navigation.navigate("SupervisorDashboard")}
       >
-        <Text style={styles.text}>{t('dashboard')}</Text>
+        <Text style={styles.text}>{t("ui.dashboard")}</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
         style={styles.link}
         onPress={() => navigation.navigate("Checkout")}
       >
-        <Text style={styles.text}>{t('checkOut')}</Text>
+        <Text style={styles.text}>{t("attendance.checkOut")}</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
         style={styles.link}
         onPress={() => navigation.navigate("CheckIn")}
       >
-        <Text style={styles.text}>{t('checkIn')}</Text>
+        <Text style={styles.text}>{t("attendance.checkIn")}</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
         style={styles.link}
         onPress={() => navigation.navigate("SpecialReEntry")}
       >
-        <Text style={styles.text}>{t('specialReEntry')}</Text>
+        <Text style={styles.text}>{t("attendance.specialReEntry")}</Text>
       </TouchableOpacity>
     </View>
   );

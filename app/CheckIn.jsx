@@ -29,17 +29,16 @@ function CheckIn() {
           image: photo.uri,
           is_unauthorized: false
         }
-        const checkIn = await CheckInAttendance(send);
-        // console.log(checkIn);
+        const checkIn = CheckInAttendance(send);
         checkIn
-          ? Alert.alert(t("checkinSuccess"))
-          : console.log(t("checkinFailure"));
+          ? Alert.alert(t("attendance.checkinSuccess"))
+          : console.log(t("attendance.checkinFailure"));
       } else {
         const send = {
           image: photo.uri,
           is_unauthorized: true
         }
-        const checkIn = await CheckInAttendance(send);
+        const checkIn = CheckInAttendance(send);
         Alert.alert("Unauthorized worker");
       }
     } catch (error) {

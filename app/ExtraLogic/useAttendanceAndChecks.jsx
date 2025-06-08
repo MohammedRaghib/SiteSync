@@ -18,7 +18,7 @@ const useAttendanceAndChecks = () => {
             const { coords } = await Location.getCurrentPositionAsync({
                 mayUseLastKnownLocation: true,
             });
-
+            // console.log(coords);
             return {
                 timestamp,
                 location: {
@@ -81,6 +81,7 @@ const useAttendanceAndChecks = () => {
 
             return true;
         } catch (error) {
+            // console.error(error.message)
             return false;
         }
     };

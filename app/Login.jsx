@@ -18,7 +18,7 @@ const Login = () => {
 
   const handleLogin = async () => {
     if (!username || !password) {
-      setErrorMessage(t("errorRequired"));
+      setErrorMessage(t("auth.errorRequired"));
       return;
     }
     setErrorMessage('');
@@ -34,7 +34,7 @@ const Login = () => {
       });
 
       if (!userResponse.ok) {
-        throw new Error(t("errorLoginFailed"));
+        throw new Error(t("auth.errorLoginFailed"));
       }
 
       setErrorMessage("");
@@ -69,27 +69,27 @@ const Login = () => {
         <View style={styles.container}>
           <TextInput
             style={styles.input}
-            placeholder={t("username")}
+            placeholder={t("auth.username")}
             value={username}
             onChangeText={setUsername}
           />
           <TextInput
             style={styles.input}
-            placeholder={t("password")}
+            placeholder={t("auth.password")}
             secureTextEntry
             value={password}
             onChangeText={setPassword}
           />
           <TouchableOpacity style={styles.button} onPress={handleLogin}>
-            <Text style={styles.buttonText}>{loading ? t("loading") : (t("login"))}</Text>
+            <Text style={styles.buttonText}>{loading ? t("ui.loading") : (t("auth.login"))}</Text>
           </TouchableOpacity>
           {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
         </View>
       ) : (
         <View style={styles.container}>
-          <Text>{t("alreadyLoggedIn")}</Text>
+          <Text>{t("auth.alreadyLoggedIn")}</Text>
           <TouchableOpacity style={styles.button} onPress={() => navigation.navigate(user.role === "supervisor" ? "SupervisorPanel" : "CheckIn")}>
-            <Text style={styles.buttonText}>{t("dashboard")}</Text>
+            <Text style={styles.buttonText}>{t("ui.dashboard")}</Text>
           </TouchableOpacity>
         </View>
       )}

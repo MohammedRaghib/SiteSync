@@ -34,8 +34,8 @@ const SupervisorDashboard = () => {
       );
 
       if (!peopleResponse.ok) {
-        setErrorMessage(t("fetchError"));
-        throw new Error(t("fetchError"));
+        setErrorMessage(t("errors.fetchError"));
+        throw new Error(t("errors.fetchError"));
       }
 
       const jsonPeopleData = await peopleResponse.json();
@@ -53,26 +53,26 @@ const SupervisorDashboard = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{t("dashboard")}</Text>
+      <Text style={styles.title}>{t("ui.dashboard")}</Text>
 
       <View style={styles.header}>
-        <Text style={styles.headerText}>{t("name")}</Text>
-        <Text style={styles.headerText}>{t("status")}</Text>
+        <Text style={styles.headerText}>{t("ui.name")}</Text>
+        <Text style={styles.headerText}>{t("ui.status")}</Text>
       </View>
 
       {loading ? (
-        <Text style={styles.loading}>{t("loading")}</Text>
+        <Text style={styles.loading}>{t("ui.loading")}</Text>
       ) : errorMessage ? (
         <Text style={styles.error}>{errorMessage}</Text>
       ) : peopleData.length > 0 ? (
         peopleData.map((person) => (
           <View key={person.id} style={styles.item}>
             <Text style={styles.name}>{person.attendance_subject?.person_name}</Text>
-            <Text style={styles.status}>{person.attendance_is_check_in ? t("checkIn") : t("checkOut")}</Text>
+            <Text style={styles.status}>{person.attendance_is_check_in ? t("attendance.checkIn") : t("attendance.checkOut")}</Text>
           </View>
         ))
       ) : (
-        <Text style={styles.noData}>{t("noData")}</Text>
+        <Text style={styles.noData}>{t("ui.noData")}</Text>
       )}
     </View>
   );
