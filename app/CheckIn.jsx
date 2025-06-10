@@ -1,11 +1,11 @@
-import CameraLocationComponent from "./CameraLocationComponent";
-import { useTranslation } from 'react-i18next';
-import { Alert, View, Text } from "react-native";
-import useFaceRecognition from "./ExtraLogic/useFaceRecognition";
-import useAttendanceAndChecks from "./ExtraLogic/useAttendanceAndChecks";
 import { useNavigation } from "@react-navigation/native";
-import useCheckInfo from "./ExtraLogic/useUserContext";
 import { useEffect } from "react";
+import { useTranslation } from 'react-i18next';
+import { Alert, Text, View } from "react-native";
+import CameraLocationComponent from "./CameraLocationComponent";
+import useAttendanceAndChecks from "./ExtraLogic/useAttendanceAndChecks";
+import useFaceRecognition from "./ExtraLogic/useFaceRecognition";
+import useCheckInfo from "./ExtraLogic/useUserContext";
 
 function CheckIn() {
   const { t } = useTranslation();
@@ -16,7 +16,7 @@ function CheckIn() {
 
   useEffect(() => {
     if (!hasAccess({ requiresLogin: true, allowedRoles: ["guard", "supervisor"] })) {
-      navigation.navigate("CheckIn");
+      navigation.navigate("Login");
     }
   }, [user, loggedIn]);
   const handlePictureTaken = async (photo) => {
@@ -30,16 +30,14 @@ function CheckIn() {
           is_unauthorized: false
         }
         const checkIn = CheckInAttendance(send);
-        checkIn
-          ? Alert.alert(t("attendance.checkinSuccess"))
-          : console.log(t("attendance.checkinFailure"));
+        Alert.alert(t(checkIn));
       } else {
         const send = {
           image: photo.uri,
           is_unauthorized: true
         }
         const checkIn = CheckInAttendance(send);
-        Alert.alert("Unauthorized worker");
+        Alert.alert(t(checkIn));
       }
     } catch (error) {
       Alert.alert(error.message);

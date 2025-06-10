@@ -6,22 +6,16 @@ import useCheckInfo from "./ExtraLogic/useUserContext";
 
 const SupervisorDashboard = () => {
   const navigation = useNavigation();
-  const { user, loggedIn, hasAccess, refreshAccessToken } = useCheckInfo();
   const { t } = useTranslation();
-
-  useEffect(() => {
-    if (!hasAccess({ requiresLogin: true, allowedRoles: ["supervisor"] })) {
-      navigation.navigate("CheckIn");
-    }
-  }, [user, loggedIn]);
+  const { user, loggedIn, hasAccess, refreshAccessToken } = useCheckInfo();
 
   const BACKEND_API_URL = "http://127.0.0.1:8000/api/";
 
-  const [peopleData, setPeopleData] = useState([]);
+  const [AttendanceData, setAttendanceData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const fetchPeople = async () => {
+  const fetchAttendance = async () => {
     // console.log(user);
     setLoading(true);
     setErrorMessage("");
@@ -38,8 +32,8 @@ const SupervisorDashboard = () => {
         throw new Error(t("errors.fetchError"));
       }
 
-      const jsonPeopleData = await peopleResponse.json();
-      setPeopleData(jsonPeopleData.data || []);
+      const jsonAttendanceData = await peopleResponse.json();
+      setAttendanceData(jsonAttendanceData.data || []);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -48,7 +42,13 @@ const SupervisorDashboard = () => {
   };
 
   useEffect(() => {
-    fetchPeople();
+    if (!hasAccess({ requiresLogin: true, allowedRoles: ["supervisor"] })) {
+      navigation.navigate("CheckIn");
+    }
+  }, [user, loggedIn]);
+
+  useEffect(() => {
+    fetchAttendance();
   }, []);
 
   return (
@@ -64,11 +64,11 @@ const SupervisorDashboard = () => {
         <Text style={styles.loading}>{t("ui.loading")}</Text>
       ) : errorMessage ? (
         <Text style={styles.error}>{errorMessage}</Text>
-      ) : peopleData.length > 0 ? (
-        peopleData.map((person) => (
-          <View key={person.id} style={styles.item}>
-            <Text style={styles.name}>{person.attendance_subject?.person_name}</Text>
-            <Text style={styles.status}>{person.attendance_is_check_in ? t("attendance.checkIn") : t("attendance.checkOut")}</Text>
+      ) : AttendanceData.length > 0 ? (
+        AttendanceData.map((attendance) => (
+          <View key={attendance.attendance_subject?.person_id} style={styles.item}>
+            <Text style={styles.name}>{attendance.attendance_subject?.person_name}</Text>
+            <Text style={styles.status}>{attendance.attendance_is_check_in ? t("attendance.checkIn") : t("attendance.checkOut")}</Text>
           </View>
         ))
       ) : (

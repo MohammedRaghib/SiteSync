@@ -23,7 +23,6 @@ function SupervisorPanel() {
     }
   }, [loggedIn, user?.role]);
 
-
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -51,7 +50,7 @@ function SupervisorPanel() {
         style={styles.link}
         onPress={() => navigation.navigate("SpecialReEntry")}
       >
-        <Text style={styles.text}>{t("attendance.specialReEntry")}</Text>
+        <Text style={styles.text}>{t("ui.specialReEntry")}</Text>
       </TouchableOpacity>
     </View>
   );

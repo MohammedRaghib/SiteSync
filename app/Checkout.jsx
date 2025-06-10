@@ -1,11 +1,11 @@
-import CameraLocationComponent from "./CameraLocationComponent";
-import { useTranslation } from 'react-i18next';
-import { Alert, View, Text } from "react-native";
-import useFaceRecognition from "./ExtraLogic/useFaceRecognition";
-import useAttendanceAndChecks from "./ExtraLogic/useAttendanceAndChecks";
 import { useNavigation } from "@react-navigation/native";
-import useCheckInfo from "./ExtraLogic/useUserContext";
 import { useEffect } from "react";
+import { useTranslation } from 'react-i18next';
+import { Alert, Text, View } from "react-native";
+import CameraLocationComponent from "./CameraLocationComponent";
+import useAttendanceAndChecks from "./ExtraLogic/useAttendanceAndChecks";
+import useFaceRecognition from "./ExtraLogic/useFaceRecognition";
+import useCheckInfo from "./ExtraLogic/useUserContext";
 
 function CheckOut() {
   const { t } = useTranslation();
@@ -35,16 +35,14 @@ function CheckOut() {
           is_equipment_returned: data.matched_worker.is_equipment_returned
         };
         const checkOut = await CheckOutAttendance(send);
-        checkOut
-          ? Alert.alert(t("attendance.checkoutSuccess"))
-          : Alert.alert(t("attendance.checkoutFailure"));
+        Alert.alert(t(checkOut));
       } else {
         const send = {
           image: photo.uri,
           is_unauthorized: true
         };
         const checkOut = await CheckOutAttendance(send);
-        Alert.alert(t("attendance.unauthorizedWorker"));
+        Alert.alert(t(checkOut));
       }
     } catch (error) {
       Alert.alert(error.message);

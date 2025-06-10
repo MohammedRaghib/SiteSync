@@ -23,36 +23,36 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <CheckInfoProvider>
-          <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="index" options={{ title: "Home"}} />
-            <Stack.Screen name="Language/SwitchLanguage"/>
-            <Stack.Screen name="Login" options={{ title: "Login" }} />
-            <Stack.Screen
-              name="SupervisorDashboard"
-              options={{ title: "Supervisor Dashboard" }}
-            />
-            <Stack.Screen
-              name="Checkout"
-              options={{ title: "Supervisor Checkout" }}
-            />
-            <Stack.Screen
-              name="SupervisorTaskCheck"
-              options={{ title: "Supervisor Task Check" }}
-            />
-            <Stack.Screen
-              name="SupervisorPanel"
-              options={{ title: "Supervisor Panel" }}
-            />
-            <Stack.Screen name="CheckIn" options={{ title: "Check-In" }} />
-            <Stack.Screen
-              name="SpecialReEntry"
-              options={{ title: "Special Re-Entry" }}
-            />
-            <Stack.Screen
-              name="+not-found"
-              options={{ title: "Page Not Found" }}
-            />
-          </Stack>
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="index" options={{ title: "Home" }} />
+          <Stack.Screen name="Language/SwitchLanguage" />
+          <Stack.Screen name="Login" options={{ title: "Login" }} />
+
+          <Stack.Screen name="CheckIn" options={{ title: "Check-In" }} />
+          <Stack.Screen name="Checkout" options={{ title: "Checkout" }} />
+
+          <Stack.Screen
+            name="SupervisorDashboard"
+            options={{ title: " Supervisor Dashboard" }}
+          />
+          <Stack.Screen
+            name="SupervisorTaskCheck"
+            options={{ title: "Supervisor Task Check" }}
+          />
+          <Stack.Screen
+            name="SupervisorPanel"
+            options={{ title: "Supervisor Panel" }}
+          />
+          <Stack.Screen
+            name="SpecialReEntry"
+            options={{ title: "Special Re-Entry" }}
+          />
+          
+          <Stack.Screen
+            name="+not-found"
+            options={{ title: "Page Not Found" }}
+          />
+        </Stack>
       </CheckInfoProvider>
       <StatusBar style="auto" />
     </ThemeProvider>

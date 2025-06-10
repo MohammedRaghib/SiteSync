@@ -1,12 +1,11 @@
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Alert, CheckBox, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Alert, CheckBox, StyleSheet, Text, TouchableOpacity, View, ScrollView } from "react-native";
 import useAttendanceAndChecks from "./ExtraLogic/useAttendanceAndChecks";
 import useCheckInfo from "./ExtraLogic/useUserContext";
 
 function SupervisorTaskCheck() {
-  // Hooks and state
   const route = useRoute();
   const { t } = useTranslation();
   const { faceData } = route.params || {};
@@ -16,17 +15,15 @@ function SupervisorTaskCheck() {
 
   const [state, setState] = useState({
     tasks: [],
-    selectedTasks: [],
-    returnedEquipment: [],
     loading: false,
     submitting: false,
     error: null,
-    selectAll: false
+    allTasksCompleted: false,
+    allEquipmentReturned: false
   });
 
   const BACKEND_API_URL = "http://127.0.0.1:8000/api/";
 
-  // Fetch tasks
   const fetchTasks = async () => {
     setState(prev => ({ ...prev, loading: true, error: null }));
     try {
@@ -34,7 +31,7 @@ function SupervisorTaskCheck() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(t('fetchError'));
+        throw new Error(t('errors.fetchError'));
       }
 
       setState(prev => ({ ...prev, tasks: data.tasks || [] }));
@@ -48,69 +45,53 @@ function SupervisorTaskCheck() {
     }
   };
 
-  // Toggle helpers
-  const toggleSelection = (type, id) => {
-    const key = type === 'task' ? 'selectedTasks' : 'returnedEquipment';
-    setState(prev => ({
-      ...prev,
-      [key]: prev[key].includes(id)
-        ? prev[key].filter(itemId => itemId !== id)
-        : [...prev[key], id],
-      selectAll: false,
-    }));
-  };
-
-  const toggleSelectAll = () => {
+  const toggleSelection = (type) => {
     setState(prev => {
-      const newSelectAll = !prev.selectAll;
-      const allTaskIds = prev.tasks.map(task => task.id);
-      const allEquipmentIds = prev.tasks.flatMap(task =>
-        task.equipment?.map(equip => equip.id) || []
-      );
-
-      return {
-        ...prev,
-        selectAll: newSelectAll,
-        selectedTasks: newSelectAll ? allTaskIds : [],
-        returnedEquipment: newSelectAll ? allEquipmentIds : [],
-      };
+      const newState = { ...prev };
+      if (type === 'allTasks') {
+        newState.allTasksCompleted = !prev.allTasksCompleted;
+      } else if (type === 'allEquipment') {
+        newState.allEquipmentReturned = !prev.allEquipmentReturned;
+      }
+      return newState;
     });
   };
 
-  // Submit handler
+  const toggleSelectAll = () => {
+    setState(prev => ({
+      ...prev,
+      allTasksCompleted: !prev.allTasksCompleted,
+      allEquipmentReturned: !prev.allEquipmentReturned,
+    }));
+  };
+
   const handleSubmit = async () => {
     setState(prev => ({ ...prev, submitting: true }));
     try {
-      const allTasksCompleted = state.tasks.length > 0 &&
-        state.selectedTasks.length === state.tasks.length;
-
-      const allEquipmentReturned = state.tasks?.equipment?.length > 0
-        ? state.returnedEquipment.length === state.tasks.equipment.length
-        : true;
-
       const success = await CheckOutAttendance({
         ...faceData,
         is_unauthorized: false,
-        is_work_completed: allTasksCompleted,
-        is_equipment_returned: allEquipmentReturned
+        is_work_completed: state.allTasksCompleted,
+        is_equipment_returned: state.allEquipmentReturned,
+        is_incomplete_checkout: !state.allTasksCompleted || !state.allEquipmentReturned
       });
 
       Alert.alert(
-        success ? t("attendance.checkoutSuccess") : t("attendance.checkoutFailure"),
-        `Tasks: ${allTasksCompleted ? 'Completed' : 'Incomplete'}\nEquipment: ${allEquipmentReturned ? 'Returned' : 'Missing'}`
+        success ? t("attendance.checkoutSuccess") : t("errors.checkoutFailure"),
+        `${t("ui.tasks")}: ${state.allTasksCompleted ? t('ui.completed') : t('ui.incomplete')}\n${t("ui.equipment")}: ${state.allEquipmentReturned ? t('ui.returned') : t('ui.missing')}`
       );
 
       if (success) {
         navigation.goBack();
       }
     } catch (error) {
-      Alert.alert(t("attendance.checkoutFailure"));
+      console.error("Checkout submission error:", error);
+      Alert.alert(t("errors.checkoutFailure"), error.message || t("errors.serverError"));
     } finally {
       setState(prev => ({ ...prev, submitting: false }));
     }
   };
 
-  // Auth check
   useEffect(() => {
     if (!hasAccess({ requiresLogin: true, allowedRoles: ["supervisor"] })) {
       navigation.navigate("CheckIn");
@@ -121,67 +102,80 @@ function SupervisorTaskCheck() {
     }
   }, [user, loggedIn, hasAccess, faceData]);
 
-  // Render helpers
   const renderEquipment = (task) => {
     if (!task.equipment || task.equipment.length === 0) {
-      return <Text style={styles.noData}>{t("ui.noEquipment")}</Text>;
+      return <Text style={styles.noEquipmentText}>{t("ui.noEquipment")}</Text>;
     }
 
     return task.equipment.map(equipment => (
-      <View key={equipment.id} style={styles.item}>
-        {/* <CheckBox
-          value={state.returnedEquipment.includes(equipment.id)}
-          onValueChange={() => toggleSelection('equipment', equipment.id)}
-        /> */}
-        <Text style={styles.equipment_name}>{equipment.name}</Text>
+      <View key={equipment.id} style={styles.equipmentItem}>
+        <Text style={styles.equipmentName}>{equipment.name}</Text>
       </View>
     ));
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{t("ui.dashboard")}</Text>
-      <Text style={styles.name}>{faceData?.name || t("errors.noName")}</Text>
+      <Text style={styles.title}>{t("attendance.supervisorTaskCheck")}</Text>
+      <Text style={styles.workerName}>{faceData?.name || t("errors.noName")}</Text>
 
-      <TouchableOpacity onPress={toggleSelectAll} style={styles.selectAllContainer}>
-        <CheckBox value={state.selectAll} onValueChange={toggleSelectAll} />
-        <Text style={styles.selectAllText}>{t("ui.selectAll")}</Text>
-      </TouchableOpacity>
+      <View style={styles.globalCheckboxes}>
+        <TouchableOpacity style={styles.checkboxOption} onPress={toggleSelectAll}>
+          <CheckBox
+            value={state.allTasksCompleted && state.allEquipmentReturned}
+            onValueChange={toggleSelectAll}
+          />
+          <Text style={styles.checkboxLabel}>{t("ui.selectAll")}</Text>
+        </TouchableOpacity>
 
-      {state.loading ? (
-        <ActivityIndicator size="large" />
-      ) : state.error ? (
-        <Text style={styles.error}>{state.error}</Text>
-      ) : state.tasks.length > 0 ? (
-        <>
-          {state.tasks.map(task => (
-            <View key={task.id} style={styles.taskContainer}>
-              <View style={styles.item}>
-                {/* <CheckBox
-                  value={state.selectedTasks.includes(task.id)}
-                  onValueChange={() => toggleSelection('task', task.id)}
-                /> */}
-                <Text style={styles.task_name}>{task.name}</Text>
-              </View>
+        <View style={styles.inlineCheckboxes}>
+          <TouchableOpacity style={styles.checkboxOption} onPress={() => toggleSelection('allTasks')}>
+            <CheckBox
+              value={state.allTasksCompleted}
+              onValueChange={() => toggleSelection('allTasks')}
+            />
+            <Text style={styles.checkboxLabel}>{t("ui.allTasksCompleted")}</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.checkboxOption} onPress={() => toggleSelection('allEquipment')}>
+            <CheckBox
+              value={state.allEquipmentReturned}
+              onValueChange={() => toggleSelection('allEquipment')}
+            />
+            <Text style={styles.checkboxLabel}>{t("ui.allEquipmentReturned")}</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      <ScrollView style={styles.scrollViewContent}>
+        {state.loading ? (
+          <ActivityIndicator size="large" color="#007bff" style={styles.loadingIndicator} />
+        ) : state.error ? (
+          <Text style={styles.errorText}>{state.error}</Text>
+        ) : state.tasks.length > 0 ? (
+          state.tasks.map(task => (
+            <View key={task.id} style={styles.taskCard}>
+              <Text style={styles.taskName}>{task.name}</Text>
+              <Text style={styles.equipmentHeader}>{t("ui.equipment")}:</Text>
               {renderEquipment(task)}
             </View>
-          ))}
+          ))
+        ) : (
+          <Text style={styles.noDataText}>{t("ui.noData")}</Text>
+        )}
+      </ScrollView>
 
-          <TouchableOpacity
-            style={[styles.submitButton, state.submitting && styles.disabledButton]}
-            onPress={handleSubmit}
-            disabled={state.submitting}
-          >
-            {state.submitting ? (
-              <ActivityIndicator color="white" />
-            ) : (
-              <Text style={styles.submitButtonText}>{t("ui.submit")}</Text>
-            )}
-          </TouchableOpacity>
-        </>
-      ) : (
-        <Text style={styles.noData}>{t("errors.noData")}</Text>
-      )}
+      <TouchableOpacity
+        style={[styles.submitButton, state.submitting && styles.disabledButton]}
+        onPress={handleSubmit}
+        disabled={state.submitting}
+      >
+        {state.submitting ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <Text style={styles.submitButtonText}>{t("ui.submit")}</Text>
+        )}
+      </TouchableOpacity>
     </View>
   );
 }
@@ -189,69 +183,137 @@ function SupervisorTaskCheck() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: '#f5f7fa',
+    padding: 20,
+    paddingTop: 40,
   },
   title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-  },
-  selectAllContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    fontSize: '1.5rem',
+    fontWeight: '700',
+    color: '#333',
+    textAlign: 'center',
     marginBottom: 10,
   },
-  selectAllText: {
-    fontSize: 18,
-    marginLeft: 10,
+  workerName: {
+    fontSize: '1rem',
+    fontWeight: '600',
+    color: '#007bff',
+    textAlign: 'center',
+    marginBottom: 25,
   },
-  item: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
-    width: "100%",
+  globalCheckboxes: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: '0.5rem',
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3.84,
+    elevation: 3,
+    maxWidth: '100%',
   },
-  name: {
-    fontSize: 20,
-    fontWeight: "bold",
-    textTransform: "uppercase",
-    marginLeft: 10,
+  inlineCheckboxes: {
+    flexDirection: 'column',
+    justifyContent: 'space-evenly',
+    marginTop: 15,
+    paddingTop: 10,
+    borderTopWidth: 1,
+    borderTopColor: '#eee',
   },
-  task_name: {
+  checkboxOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  checkboxLabel: {
     fontSize: 16,
-    marginLeft: 10,
+    marginLeft: 8,
+    color: '#555',
   },
-  submitButton: {
-    backgroundColor: '#007AFF',
-    padding: 15,
-    borderRadius: 5,
-    marginTop: 20,
+  scrollViewContent: {
+    flex: 1,
   },
-  submitButtonText: {
-    color: 'white',
+  loadingIndicator: {
+    marginTop: 50,
+  },
+  errorText: {
     fontSize: 16,
+    color: '#dc3545',
+    textAlign: 'center',
+    marginTop: 30,
     fontWeight: 'bold',
   },
-  loading: {
+  noDataText: {
     fontSize: 16,
+    color: '#888',
+    textAlign: 'center',
+    marginTop: 30,
   },
-  error: {
-    fontSize: 16,
-    color: "red",
-  },
-  noData: {
-    fontSize: 16,
-  },
-  taskContainer: {
-    width: '100%',
+  taskCard: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 15,
     marginBottom: 15,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3.84,
+    elevation: 3,
+  },
+  taskName: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#444',
+    marginBottom: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+    paddingBottom: 8,
+  },
+  equipmentHeader: {
+    fontSize: 15,
+    fontWeight: '500',
+    color: '#666',
+    marginBottom: 8,
+  },
+  equipmentItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 5,
+    paddingLeft: 10,
+  },
+  equipmentName: {
+    fontSize: 15,
+    color: '#555',
+  },
+  noEquipmentText: {
+    fontSize: 14,
+    color: '#888',
+    fontStyle: 'italic',
+    paddingLeft: 10,
+  },
+  submitButton: {
+    backgroundColor: '#007bff',
+    paddingVertical: 15,
+    borderRadius: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 20,
+    shadowColor: '#007bff',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 5,
+  },
+  submitButtonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
   disabledButton: {
-    opacity: 0.6,
+    backgroundColor: '#a0c7ff',
+    shadowOpacity: 0,
+    elevation: 0,
   },
 });
 

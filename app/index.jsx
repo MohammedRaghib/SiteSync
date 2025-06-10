@@ -1,12 +1,6 @@
-import { View } from "react-native";
-import { StyleSheet } from "react-native";
-import Login from "./Login";
+import { StyleSheet, View } from "react-native";
 import SwitchLanguage from "./Language/SwitchLanguage";
-import CheckIn from "./CheckIn";
-import SupervisorDashboard from "./SupervisorDashboard";
-import SupervisorPanel from "./SupervisorPanel";
-import SpecialReEntry from "./SpecialReEntry";
-import Checkout from "./Checkout";
+import Login from "./Login";
 
 export default function Index() {
   // console.log('render')

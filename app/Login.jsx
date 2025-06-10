@@ -1,7 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
-import { useEffect, useState } from "react";
+import {useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import useCheckInfo from "./ExtraLogic/useUserContext";
 
 const Login = () => {
@@ -18,7 +18,7 @@ const Login = () => {
 
   const handleLogin = async () => {
     if (!username || !password) {
-      setErrorMessage(t("auth.errorRequired"));
+      setErrorMessage(t("errors.errorRequired"));
       return;
     }
     setErrorMessage('');
@@ -34,7 +34,7 @@ const Login = () => {
       });
 
       if (!userResponse.ok) {
-        throw new Error(t("auth.errorLoginFailed"));
+        throw new Error(t("errors." + userResponse.error_type));
       }
 
       setErrorMessage("");
@@ -88,7 +88,7 @@ const Login = () => {
       ) : (
         <View style={styles.container}>
           <Text>{t("auth.alreadyLoggedIn")}</Text>
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate(user.role === "supervisor" ? "SupervisorPanel" : "CheckIn")}>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate(user.role === "supervisor" ? "Supervisor/SupervisorPanel" : "Check/CheckIn")}>
             <Text style={styles.buttonText}>{t("ui.dashboard")}</Text>
           </TouchableOpacity>
         </View>
