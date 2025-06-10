@@ -60,8 +60,8 @@ function SupervisorTaskCheck() {
   const toggleSelectAll = () => {
     setState(prev => ({
       ...prev,
-      allTasksCompleted: !prev.allTasksCompleted,
-      allEquipmentReturned: !prev.allEquipmentReturned,
+      allTasksCompleted: prev.allTasksCompleted && prev.allEquipmentReturned ? false : true,
+      allEquipmentReturned: prev.allEquipmentReturned && prev.allTasksCompleted ? false : true,
     }));
   };
 
@@ -79,7 +79,7 @@ function SupervisorTaskCheck() {
       Alert.alert(success);
 
       navigation.goBack();
-      
+
     } catch (error) {
       console.error("Checkout submission error:", error);
       Alert.alert(t("errors.checkoutFailure"), error.message || t("errors.serverError"));
