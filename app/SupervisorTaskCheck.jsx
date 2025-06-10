@@ -76,14 +76,10 @@ function SupervisorTaskCheck() {
         is_incomplete_checkout: !state.allTasksCompleted || !state.allEquipmentReturned
       });
 
-      Alert.alert(
-        success ? t("attendance.checkoutSuccess") : t("errors.checkoutFailure"),
-        `${t("ui.tasks")}: ${state.allTasksCompleted ? t('ui.completed') : t('ui.incomplete')}\n${t("ui.equipment")}: ${state.allEquipmentReturned ? t('ui.returned') : t('ui.missing')}`
-      );
+      Alert.alert(success);
 
-      if (success) {
-        navigation.goBack();
-      }
+      navigation.goBack();
+      
     } catch (error) {
       console.error("Checkout submission error:", error);
       Alert.alert(t("errors.checkoutFailure"), error.message || t("errors.serverError"));

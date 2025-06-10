@@ -73,16 +73,13 @@ const useAttendanceAndChecks = () => {
 
             if (!response.ok) {
                 const errorData = await response.json().catch(() => ({}));
-                throw new Error(
-                    errorData.message ||
-                    `Failed to check ${isCheckIn ? "in" : "out"}: ${response.statusText}`
-                );
+                throw new Error('errors.' + errorData.error_type);
             }
 
-            return true;
+            return 'attendance.checkinSuccess';
         } catch (error) {
             // console.error(error.message)
-            return false;
+            return error.message;
         }
     };
 
